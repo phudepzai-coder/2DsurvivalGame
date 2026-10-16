@@ -27,7 +27,7 @@
 //  ⚙️  CẤU HÌNH FIREBASE — chỉ sửa ở đây
 // ════════════════════════════════════════
 const FIREBASE_CONFIG = {
-  databaseURL: "https://dsurvivalgame-4a736-default-rtdb.firebaseio.com",
+  databaseURL: "https://dsurvivalgame-4a736-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 // REST API gốc của Realtime Database (không cần SDK, hoạt động với file:// và GitHub Pages)
 const DB_ROOT = FIREBASE_CONFIG.databaseURL;
