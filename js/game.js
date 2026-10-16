@@ -575,9 +575,8 @@ class Game {
     // ---- Skill icons + cooldown ----
     const skillIcons = { chain: "⚡", shockwave: "💥", blackhole: "🌀", chrono: "⏳", voodoo: "🔮", bloodpact: "🩸" };
     const learnedSkills = Object.keys(skillIcons).filter((id) => (this.player.skills[id] || 0) > 0);
-    const isJoystick = Input.controlMode === "touch_joystick";
-    // Nếu dùng Joystick ở góc dưới bên trái, dời icon skill sang góc dưới bên phải để không bị ngón tay che
-    let sx = isJoystick ? (CONFIG.canvasWidth - 20 - learnedSkills.length * 48) : 20;
+    // Khi dùng Joystick ở giữa lệch phải, đặt skill icons ở góc dưới bên trái để không bị tay che
+    let sx = 20;
     const sy = CONFIG.canvasHeight - 58;
     for (const id of learnedSkills) {
       const lv = this.player.skills[id];
