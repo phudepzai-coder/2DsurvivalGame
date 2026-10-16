@@ -9,7 +9,8 @@ Write-Host "Chương trình đang lắng nghe thay đổi trong thư mục game.
 Write-Host "Mỗi khi bạn sửa/lưu file, hệ thống sẽ tự động commit & push!" -ForegroundColor Gray
 Write-Host "(Nhấn Ctrl+C để dừng bất cứ lúc nào)`n" -ForegroundColor DarkGray
 
-$path = $PSScriptRoot
+$path = (Get-Item $PSScriptRoot).Parent.FullName
+Set-Location $path
 $watcher = New-Object System.IO.FileSystemWatcher
 $watcher.Path = $path
 $watcher.IncludeSubdirectories = $true
