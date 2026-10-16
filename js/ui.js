@@ -78,18 +78,34 @@ class UI {
     this.inpPin.addEventListener("keydown", enterLogin);
   }
 
-  /** Xử lý nút Đăng nhập / Đăng ký */
-  _auth(mode) {
+  /** Xử lý nút Đăng nhập / Đăng ký (async vì Firebase) */
+  async _auth(mode) {
     const username = this.inpUsername.value;
     const pin = this.inpPin.value;
-    const result = mode === "login" ? Save.login(username, pin) : Save.register(username, pin);
+
+    // Hiện trạng thái đang tải
+    this.authMsg.style.color = "#80cbc4";
+    this.authMsg.textContent = mode === "login" ? "⏳ Đang đăng nhập..." : "⏳ Đang đăng ký...";
+    const btnLogin = document.getElementById("btn-login");
+    const btnReg   = document.getElementById("btn-register");
+    if (btnLogin) btnLogin.disabled = true;
+    if (btnReg)   btnReg.disabled   = true;
+
+    const result = mode === "login"
+      ? await Save.login(username, pin)
+      : await Save.register(username, pin);
+
+    if (btnLogin) btnLogin.disabled = false;
+    if (btnReg)   btnReg.disabled   = false;
 
     if (result.ok) {
+      this.authMsg.style.color = "";
       this.authMsg.textContent = "";
       this.inpUsername.value = "";
       this.inpPin.value = "";
       this.renderMenu();
     } else {
+      this.authMsg.style.color = "#ff8a80";
       this.authMsg.textContent = "⚠️ " + result.error;
     }
   }
@@ -142,8 +158,17 @@ class UI {
       `;
 
       if (!maxed && logged) {
-        card.querySelector(".buy").addEventListener("click", () => {
-          if (Save.buyUpgrade(u)) this.renderMenu();
+        card.querySelector(".buy").addEventListener("click", async (e) => {
+          const btn = e.currentTarget;
+          btn.disabled = true;
+          btn.textContent = "⏳";
+          const ok = await Save.buyUpgrade(u);
+          if (ok) {
+            this.renderMenu();
+          } else {
+            btn.disabled = false;
+            btn.textContent = `🪙 ${cost}`;
+          }
         });
       }
       this.shopEl.appendChild(card);
