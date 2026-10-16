@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow Survivors — 2D Survival</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="game-wrap">
+    <canvas id="game" width="1280" height="720"></canvas>
+
+    <!-- Nút Tạm dừng trên HUD (đặc biệt tiện lợi cho Mobile) -->
+    <button id="btn-mobile-pause" class="hud-pause-btn hidden" title="Tạm dừng / Tiếp tục">⏸️</button>
+
+    <!-- Vòng tròn điều khiển ảo (Virtual Joystick) cho Điện thoại -->
+    <div id="joystick-zone" class="hidden">
+      <div id="joystick-base">
+        <div id="joystick-stick"></div>
+      </div>
+    </div>
+
+    <!-- MENU CHÍNH: tài khoản + shop nâng cấp vĩnh viễn -->
+    <div id="overlay-menu" class="overlay menu">
+      <h1>SHADOW SURVIVORS</h1>
+
+      <!-- Khu vực tài khoản -->
+      <div id="account-panel">
+        <!-- Chưa đăng nhập: form đăng nhập / đăng ký -->
+        <div id="login-form">
+          <input id="inp-username" placeholder="Tên tài khoản" maxlength="16" autocomplete="off" />
+          <input id="inp-pin" type="password" placeholder="Mã PIN (tối thiểu 4 ký tự)" maxlength="8" />
+          <div class="auth-buttons">
+            <button id="btn-login" class="btn small">Đăng nhập</button>
+            <button id="btn-register" class="btn small ghost">Đăng ký</button>
+          </div>
+          <p id="auth-msg"></p>
+          <button id="btn-guest" class="link-btn">Chơi ngay, không cần tài khoản →</button>
+        </div>
+
+        <!-- Đã đăng nhập: thông tin + SSC -->
+        <div id="account-info" class="hidden">
+          <span class="acc-line">
+            👤 <b id="acc-name"></b>
+            &nbsp;·&nbsp;
+            <span class="ssc-badge">🪙 <b id="acc-ssc">0</b> SSC</span>
+          </span>
+          <button id="btn-logout" class="link-btn">Đăng xuất</button>
+        </div>
+      </div>
+
+      <!-- Shop nâng cấp vĩnh viễn -->
+      <p class="sub" id="shop-note">🪙 SSC rơi từ quái — dùng để nâng cấp vĩnh viễn nhân vật</p>
+      <div id="meta-shop"></div>
+
+      <!-- Tùy chọn Chế độ Điều khiển -->
+      <div id="control-selector">
+        <span class="control-title">🎮 Chế độ điều khiển:</span>
+        <div class="control-grid">
+          <button type="button" class="ctrl-card" data-mode="mouse_wasd">
+            <span class="ctrl-icon">🖱️</span>
+            <div class="ctrl-body">
+              <span class="ctrl-name">Máy tính: Chuột / WASD</span>
+              <span class="ctrl-desc">Giữ chuột trái đi theo chuột · Phím WASD · Tự bắn</span>
+            </div>
+          </button>
+          <button type="button" class="ctrl-card" data-mode="wasd_aim">
+            <span class="ctrl-icon">⌨️</span>
+            <div class="ctrl-body">
+              <span class="ctrl-name">Máy tính: WASD + Ngắm bắn</span>
+              <span class="ctrl-desc">WASD di chuyển · Giữ chuột trái ngắm bắn thủ công</span>
+            </div>
+          </button>
+          <button type="button" class="ctrl-card" data-mode="touch_joystick">
+            <span class="ctrl-icon">📱</span>
+            <div class="ctrl-body">
+              <span class="ctrl-name">Điện thoại: Joystick ảo</span>
+              <span class="ctrl-desc">Vòng tròn cảm ứng góc trái · Tự bắn quái</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn primary">▶ BẮT ĐẦU</button>
+
+      <ul class="guide">
+        <li><b>Điều khiển:</b> Đi theo chuột trái / WASD (PC) hoặc Cần gạt ảo (Điện thoại)</li>
+        <li><b>P / Esc / Nút ⏸️</b> — Tạm dừng · <b>Skills ⚡💥🌀⏳</b> — Tự kích hoạt khi học từ Level Up</li>
+      </ul>
+    </div>
+
+    <!-- Bảng chọn nâng cấp khi lên cấp -->
+    <div id="overlay-levelup" class="overlay hidden">
+      <h2>⬆️ LEVEL UP!</h2>
+      <p class="sub">Chọn 1 trong 3 nâng cấp</p>
+      <div id="upgrade-cards"></div>
+      <p class="hint">Nhấn <b>1</b> / <b>2</b> / <b>3</b> để chọn nhanh</p>
+    </div>
+
+    <!-- Màn hình Game Over -->
+    <div id="overlay-gameover" class="overlay hidden">
+      <h1 class="danger">GAME OVER</h1>
+      <p id="go-stats"></p>
+      <div class="go-buttons">
+        <button id="btn-restart" class="btn primary">CHƠI LẠI</button>
+        <button id="btn-menu" class="btn ghost">🏠 VỀ MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thứ tự load script quan trọng: config -> utils -> input -> entities -> systems -> ui -> game -->
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/systems/sprites.js"></script>
+  <script src="js/entities/projectile.js"></script>
+  <script src="js/entities/gem.js"></script>
+  <script src="js/entities/coin.js"></script>
+  <script src="js/entities/enemy.js"></script>
+  <script src="js/entities/player.js"></script>
+  <script src="js/systems/spawner.js"></script>
+  <script src="js/systems/skills.js"></script>
+  <script src="js/systems/meta.js"></script>
+  <script src="js/systems/save.js"></script>
+  <script src="js/systems/upgrades.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

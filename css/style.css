@@ -1,0 +1,564 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #07090d;
+  color: #e8eaed;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#game-wrap {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+canvas {
+  display: block;
+  background: #101418;
+  border-radius: 10px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  /* Giữ tỉ lệ 16:9, fit vừa cửa sổ */
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* ===== Overlay chung (start / levelup / gameover) ===== */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  background: rgba(8, 10, 14, 0.88);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay h1 {
+  font-size: 52px;
+  letter-spacing: 4px;
+  text-shadow: 0 0 24px rgba(79, 195, 247, 0.5);
+}
+
+.overlay h1.danger {
+  color: #ff5252;
+  text-shadow: 0 0 24px rgba(255, 82, 82, 0.5);
+}
+
+.overlay h2 {
+  font-size: 40px;
+  color: #ffd54f;
+}
+
+.sub {
+  color: #9aa0a6;
+  font-size: 17px;
+}
+
+.hint {
+  color: #6b7075;
+  font-size: 14px;
+}
+
+.guide {
+  list-style: none;
+  color: #b8bdc2;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.btn {
+  padding: 14px 44px;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn.primary {
+  background: #4fc3f7;
+  color: #06202c;
+}
+
+.btn.primary:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 24px rgba(79, 195, 247, 0.6);
+}
+
+/* ===== Thẻ nâng cấp (Level Up) ===== */
+#upgrade-cards {
+  display: flex;
+  gap: 18px;
+  margin: 10px 0;
+}
+
+.card {
+  width: 210px;
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: #161b22;
+  border: 2px solid #2c3440;
+  border-radius: 12px;
+  color: #e8eaed;
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: #4fc3f7;
+  box-shadow: 0 8px 30px rgba(79, 195, 247, 0.25);
+}
+
+.card-key {
+  font-size: 12px;
+  color: #6b7075;
+  border: 1px solid #3a424e;
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.card-icon {
+  font-size: 40px;
+}
+
+.card-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-desc {
+  font-size: 14px;
+  color: #9aa0a6;
+  line-height: 1.5;
+}
+
+/* ================= MENU CHÍNH (tài khoản + shop SSC) ================= */
+.overlay.menu {
+  gap: 12px;
+  overflow-y: auto;
+}
+
+#account-panel {
+  min-height: 120px;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#login-form input {
+  width: 260px;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #e8eaed;
+  background: #161b22;
+  border: 1px solid #3a424e;
+  border-radius: 8px;
+  outline: none;
+  text-align: center;
+}
+
+#login-form input:focus {
+  border-color: #4fc3f7;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn.small {
+  padding: 8px 22px;
+  font-size: 14px;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: #b8bdc2;
+  border: 1px solid #3a424e;
+}
+
+.btn.ghost:hover {
+  color: #fff;
+  border-color: #4fc3f7;
+}
+
+.auth-buttons .btn.small.ghost {
+  background: transparent;
+  color: #b8bdc2;
+  border: 1px solid #3a424e;
+}
+
+#auth-msg {
+  min-height: 18px;
+  color: #ff8a80;
+  font-size: 13px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #4fc3f7;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: #8ad9ff;
+}
+
+#account-info {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 17px;
+}
+
+.acc-line .ssc-badge {
+  color: #ffd54f;
+  background: rgba(255, 213, 79, 0.12);
+  border: 1px solid rgba(255, 213, 79, 0.4);
+  border-radius: 20px;
+  padding: 3px 14px;
+}
+
+#shop-note {
+  font-size: 14px;
+}
+
+#meta-shop {
+  display: grid;
+  grid-template-columns: repeat(3, 200px);
+  gap: 12px;
+  margin: 6px 0 4px;
+}
+
+.shop-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 10px;
+  background: #161b22;
+  border: 1px solid #2c3440;
+  border-radius: 10px;
+}
+
+.shop-card .shop-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shop-icon {
+  font-size: 22px;
+}
+
+.shop-name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.shop-effect {
+  font-size: 12.5px;
+  color: #9ae6f2;
+}
+
+.shop-effect .next {
+  color: #69f0ae;
+}
+
+.shop-lv {
+  font-size: 11px;
+  color: #6b7075;
+}
+
+.btn.buy {
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #2e3b2e;
+  color: #ffd54f;
+  border: 1px solid #ffd54f;
+  border-radius: 6px;
+}
+
+.btn.buy:hover:not(:disabled) {
+  background: #ffd54f;
+  color: #201a00;
+}
+
+.btn.buy:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.shop-card.maxed .btn.buy {
+  border-color: #69f0ae;
+  color: #69f0ae;
+}
+
+#overlay-gameover .gold {
+  color: #ffd54f;
+}
+
+#overlay-gameover .warn {
+  color: #ff8a80;
+  font-size: 13px;
+}
+
+.go-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+/* ===== TÙY CHỌN CHẾ ĐỘ ĐIỀU KHIỂN (Menu) ===== */
+#control-selector {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 6px;
+}
+
+.control-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4fc3f7;
+  text-align: left;
+  letter-spacing: 0.5px;
+}
+
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.ctrl-card {
+  background: #161b22;
+  border: 1.5px solid #2c3440;
+  border-radius: 10px;
+  padding: 10px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  color: #b8bdc2;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.ctrl-card:hover {
+  border-color: #4fc3f7;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.ctrl-card.active {
+  border-color: #4fc3f7;
+  background: rgba(79, 195, 247, 0.12);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(79, 195, 247, 0.3);
+}
+
+.ctrl-card .ctrl-icon {
+  font-size: 26px;
+}
+
+.ctrl-card .ctrl-name {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.ctrl-card.active .ctrl-name {
+  color: #4fc3f7;
+}
+
+.ctrl-card .ctrl-desc {
+  display: block;
+  font-size: 11px;
+  color: #8b949e;
+  line-height: 1.35;
+}
+
+/* ===== VÒNG TRÒN ĐIỀU KHIỂN ẢO (VIRTUAL JOYSTICK CHO ĐIỆN THOẠI) ===== */
+#joystick-zone {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  width: 160px;
+  height: 160px;
+  z-index: 9;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#joystick-zone.hidden {
+  display: none !important;
+}
+
+#joystick-base {
+  width: 126px;
+  height: 126px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79, 195, 247, 0.15) 0%, rgba(16, 20, 24, 0.72) 75%);
+  border: 2px solid rgba(79, 195, 247, 0.45);
+  box-shadow: 0 0 20px rgba(79, 195, 247, 0.25), inset 0 0 16px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  pointer-events: none;
+}
+
+#joystick-stick {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #80d8ff 0%, #0288d1 70%, #01579b 100%);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 14px rgba(2, 136, 209, 0.85);
+  position: absolute;
+  pointer-events: none;
+  transform: translate(0px, 0px);
+  will-change: transform;
+}
+
+/* ===== NÚT TẠM DỪNG TRÊN HUD ===== */
+.hud-pause-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgba(22, 27, 34, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  transition: transform 0.1s ease, border-color 0.1s ease, background 0.15s ease;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.hud-pause-btn:hover {
+  transform: scale(1.08);
+  border-color: #4fc3f7;
+  background: rgba(30, 40, 50, 0.95);
+}
+
+.hud-pause-btn.hidden {
+  display: none !important;
+}
+
+/* ===== RESPONSIVE TRÊN MÀN HÌNH NHỎ / MOBILE ===== */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 14px 10px;
+    gap: 12px;
+  }
+
+  .overlay h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  .control-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .ctrl-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 8px 12px;
+    gap: 12px;
+  }
+
+  .ctrl-card .ctrl-icon {
+    font-size: 22px;
+  }
+
+  #meta-shop {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+
+  #upgrade-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 320px;
+    padding: 12px 14px;
+  }
+
+  #joystick-zone {
+    bottom: 16px;
+    left: 16px;
+    width: 140px;
+    height: 140px;
+  }
+
+  #joystick-base {
+    width: 110px;
+    height: 110px;
+  }
+
+  #joystick-stick {
+    width: 44px;
+    height: 44px;
+  }
+}
