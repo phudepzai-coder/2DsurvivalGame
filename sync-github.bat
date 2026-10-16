@@ -10,8 +10,8 @@ echo.
 git config user.name >nul 2>&1
 if %errorlevel% neq 0 (
     echo [!] Chưa cấu hình thông tin Git!
-    set /p gitname="👉 Nhập Tên của bạn (VD: Phu): "
-    set /p gitemail="👉 Nhập Email GitHub của bạn: "
+    set /p gitname="phudepzai-code "
+    set /p gitemail="phu123234345@gmail.com "
     git config --global user.name "%gitname%"
     git config --global user.email "%gitemail%"
     echo [+] Đã lưu thông tin Git.
