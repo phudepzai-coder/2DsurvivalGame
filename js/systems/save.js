@@ -40,6 +40,27 @@ const Save = {
   _cache: null,    // dữ liệu tài khoản cache cục bộ { pin, ssc, upgrades }
   _ready: false,   // true sau khi init() hoàn tất
 
+  _guestCache: {
+    ssc: 50,
+    upgrades: {},
+  },
+
+  _loadGuest() {
+    try {
+      const s = localStorage.getItem("shadowSurvivors.guestSsc");
+      if (s !== null) this._guestCache.ssc = parseInt(s, 10);
+      const u = localStorage.getItem("shadowSurvivors.guestUpgrades");
+      if (u) this._guestCache.upgrades = JSON.parse(u);
+    } catch (e) {}
+  },
+
+  _saveGuest() {
+    try {
+      localStorage.setItem("shadowSurvivors.guestSsc", this._guestCache.ssc);
+      localStorage.setItem("shadowSurvivors.guestUpgrades", JSON.stringify(this._guestCache.upgrades));
+    } catch (e) {}
+  },
+
   // ── Tiện ích ──────────────────────────────────────────────────────────────
 
   /** Hash đơn giản djb2 — giống bản cũ để PIN cũ vẫn hoạt động */
@@ -126,7 +147,7 @@ const Save = {
   },
 
   account() {
-    return this._cache;
+    return this._cache || this._guestCache;
   },
 
   // ── Đăng ký / Đăng nhập / Đăng xuất ─────────────────────────────────────
@@ -186,48 +207,58 @@ const Save = {
 
   // ── SSC & Nâng cấp ────────────────────────────────────────────────────────
 
-  /** Cộng SSC khi nhặt coin (cập nhật cache ngay, đẩy lên Firebase ngay) */
+  /** Cộng SSC khi nhặt coin hoặc nhận thưởng (hỗ trợ cả tài khoản lẫn khách) */
   addSsc(value) {
-    if (!this._cache || !this.user) return;
-    this._cache.ssc = (this._cache.ssc || 0) + value;
-    // Ghi không chờ (fire-and-forget)
-    this._set(this._url(this.user, "ssc"), this._cache.ssc, "PUT");
+    if (this._cache && this.user) {
+      this._cache.ssc = (this._cache.ssc || 0) + value;
+      this._set(this._url(this.user, "ssc"), this._cache.ssc, "PUT");
+    } else {
+      this._guestCache.ssc = (this._guestCache.ssc || 0) + value;
+      this._saveGuest();
+    }
   },
 
   canAfford(cost) {
-    return this.loggedIn() && (this._cache.ssc || 0) >= cost;
+    const acc = this.account();
+    return (acc.ssc || 0) >= cost;
   },
 
   getUpgradeLevel(id) {
-    if (!this._cache) return 0;
-    return (this._cache.upgrades && this._cache.upgrades[id]) || 0;
+    const acc = this.account();
+    return (acc.upgrades && acc.upgrades[id]) || 0;
   },
 
   getUpgradeLevels() {
-    return (this._cache && this._cache.upgrades) ? this._cache.upgrades : {};
+    const acc = this.account();
+    return acc.upgrades || {};
   },
 
   /**
    * Mua 1 level nâng cấp. Trả về Promise<boolean>.
    */
   async buyUpgrade(metaUpgrade) {
-    if (!this._cache || !this.user) return false;
+    const acc = this.account();
     const lv = this.getUpgradeLevel(metaUpgrade.id);
     if (lv >= metaUpgrade.maxLevel) return false;
     const cost = metaUpgrade.cost(lv);
-    if ((this._cache.ssc || 0) < cost) return false;
+    if ((acc.ssc || 0) < cost) return false;
 
     // Cập nhật cache cục bộ ngay để UI mượt mà
-    this._cache.ssc -= cost;
-    this._cache.upgrades[metaUpgrade.id] = lv + 1;
+    acc.ssc -= cost;
+    if (!acc.upgrades) acc.upgrades = {};
+    acc.upgrades[metaUpgrade.id] = lv + 1;
 
-    // Đồng bộ lên Firebase
-    await this._set(this._url(this.user, "ssc"), this._cache.ssc, "PUT");
-    await this._set(
-      this._url(this.user, `upgrades/${metaUpgrade.id}`),
-      lv + 1,
-      "PUT"
-    );
+    // Đồng bộ lên Firebase nếu đang đăng nhập, hoặc lưu localStorage nếu là khách
+    if (this._cache && this.user) {
+      await this._set(this._url(this.user, "ssc"), this._cache.ssc, "PUT");
+      await this._set(
+        this._url(this.user, `upgrades/${metaUpgrade.id}`),
+        lv + 1,
+        "PUT"
+      );
+    } else {
+      this._saveGuest();
+    }
     return true;
   },
 };

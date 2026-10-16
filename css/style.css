@@ -77,9 +77,12 @@ body {
   background: var(--bg-primary);
   z-index: 5;
   transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.screen.hidden {
+.hidden,
+.screen.hidden,
+.tab-panel.hidden,
+.overlay.hidden,
+.modal-backdrop.hidden,
+#joystick-zone.hidden {
   display: none !important;
 }
 
@@ -621,37 +624,110 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   THÔNG BÁO NỔI (TOAST NOTIFICATION)
+   ───────────────────────────────────────────────────────────── */
+.lobby-toast {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(14, 20, 32, 0.95);
+  border: 1.5px solid var(--accent-cyan);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 16px rgba(79, 195, 247, 0.35);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+}
+
+.lobby-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.section-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  letter-spacing: 0.5px;
+  margin: 6px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    TAB 1: SHOP (CỬA HÀNG)
    ───────────────────────────────────────────────────────────── */
-.shop-lucky-chest {
+.shop-free-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.free-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shop-lucky-chest,
+.shop-supply-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(135deg, #2b1f07 0%, #181c25 100%);
-  border: 1px solid var(--accent-gold);
+  background: linear-gradient(135deg, #1b263b 0%, #0f1624 100%);
+  border: 1px solid rgba(79, 195, 247, 0.35);
   border-radius: 14px;
   padding: 12px 14px;
 }
 
-.chest-icon {
-  font-size: 32px;
+.shop-lucky-chest {
+  background: linear-gradient(135deg, #2b1f07 0%, #181c25 100%);
+  border-color: var(--accent-gold);
 }
 
-.chest-info {
+.chest-icon,
+.supply-icon {
+  font-size: 30px;
+  filter: drop-shadow(0 0 6px rgba(255, 213, 79, 0.4));
+}
+
+.chest-info,
+.supply-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.chest-info b {
-  font-size: 14px;
-  color: var(--accent-gold);
+.chest-info b,
+.supply-info b {
+  font-size: 13.5px;
+  color: #fff;
 }
 
-.chest-info small {
+.chest-info small,
+.supply-info small {
   font-size: 11px;
   color: var(--text-sub);
+}
+
+.gold-btn {
+  background: linear-gradient(135deg, #ffb300 0%, #f57f17 100%);
+  color: #000;
+  font-weight: 800;
+  border: none;
+}
+
+.gold-btn:hover {
+  filter: brightness(1.1);
 }
 
 .shop-grid {
@@ -663,13 +739,18 @@ body {
 .shop-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
   text-align: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.shop-card:hover {
+  border-color: rgba(79, 195, 247, 0.4);
 }
 
 .shop-card .shop-head {
@@ -712,6 +793,11 @@ body {
   border: 1px solid var(--accent-gold);
   border-radius: 8px;
   cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.btn.buy:active {
+  transform: scale(0.95);
 }
 
 .btn.buy:disabled {
@@ -726,16 +812,16 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   TAB 2: TRANG BỊ (EQUIPMENT)
+   TAB 2: TRANG BỊ & CHỈ SỐ (EQUIPMENT)
    ───────────────────────────────────────────────────────────── */
 .equip-character-preview {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 14px;
+  background: linear-gradient(135deg, #162033 0%, #0d1422 100%);
+  border: 1.5px solid rgba(79, 195, 247, 0.3);
+  border-radius: 16px;
+  padding: 14px 16px;
 }
 
 .character-circle {
@@ -749,6 +835,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 0 16px rgba(79, 195, 247, 0.4);
 }
 
 .char-avatar {
@@ -758,12 +845,60 @@ body {
 .char-summary h3 {
   font-size: 16px;
   color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.char-level-badge {
+  font-size: 11px;
+  background: var(--accent-gold);
+  color: #000;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 10px;
 }
 
 .char-summary p {
   font-size: 12px;
   color: var(--text-sub);
-  margin-top: 2px;
+  margin-top: 3px;
+}
+
+/* 4 Hộp chỉ số lực chiến */
+.char-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.stat-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.stat-box-icon {
+  font-size: 22px;
+}
+
+.stat-box-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-box-body small {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.stat-box-body b {
+  font-size: 14px;
+  color: #fff;
 }
 
 .equip-slots {
@@ -778,50 +913,191 @@ body {
   gap: 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 10px 14px;
+  transition: border-color 0.15s ease;
+}
+
+.slot-card.active {
+  border-color: rgba(79, 195, 247, 0.4);
 }
 
 .slot-icon {
   font-size: 26px;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: var(--bg-card);
-  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .slot-info {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
 .slot-info b {
   font-size: 13.5px;
   color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slot-lv-tag {
+  font-size: 10px;
+  color: var(--accent-gold);
+  border: 1px solid rgba(255, 213, 79, 0.4);
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
 .slot-info small {
   font-size: 11.5px;
+  color: var(--accent-cyan);
+}
+
+.enhance-btn {
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  background: #1c2e22;
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.enhance-btn:active {
+  transform: scale(0.94);
+}
+
+.enhance-btn small {
+  font-size: 9.5px;
+  opacity: 0.85;
+}
+
+.inventory-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inventory-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.inv-icon {
+  font-size: 24px;
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inv-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.inv-info b {
+  font-size: 13px;
+  color: #fff;
+}
+
+.inv-info small {
+  font-size: 11px;
   color: var(--text-sub);
 }
 
-.slot-tag {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(79, 195, 247, 0.15);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(79, 195, 247, 0.3);
+/* ─────────────────────────────────────────────────────────────
+   TAB 3: CHIẾN ĐẤU (BATTLE) - CHỌN ẢI
+   ───────────────────────────────────────────────────────────── */
+.stage-selector-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.slot-tag.green {
-  background: rgba(105, 240, 174, 0.15);
-  color: var(--accent-green);
-  border-color: rgba(105, 240, 174, 0.3);
+.stage-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.stage-card {
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-sub);
+  transition: all 0.2s ease;
+}
+
+.stage-card .stage-icon {
+  font-size: 24px;
+}
+
+.stage-card .stage-name {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stage-tag {
+  font-size: 9.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.stage-tag.hot {
+  color: #ff9800;
+  background: rgba(255, 152, 0, 0.15);
+}
+
+.stage-tag.dark {
+  color: #b388ff;
+  background: rgba(179, 136, 255, 0.15);
+}
+
+.stage-card.active {
+  border-color: var(--accent-cyan);
+  background: rgba(79, 195, 247, 0.1);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(79, 195, 247, 0.35);
+}
+
+.stage-card.active .stage-tag {
+  background: var(--accent-cyan);
+  color: #000;
+  font-weight: 800;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -835,11 +1111,25 @@ body {
 
 .skill-entry {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   border-radius: 14px;
-  padding: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.skill-entry:hover,
+.skill-entry.expanded {
+  border-color: var(--accent-cyan);
+  background: #141c2c;
+}
+
+.skill-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .skill-entry-icon {
@@ -855,11 +1145,11 @@ body {
   flex-shrink: 0;
 }
 
-.skill-entry-body {
+.skill-entry-summary {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .skill-entry-title {
@@ -873,15 +1163,71 @@ body {
   color: #fff;
 }
 
-.skill-max {
-  font-size: 11px;
-  color: var(--accent-gold);
+.skill-type-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(79, 195, 247, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(79, 195, 247, 0.3);
 }
 
-.skill-entry-body p {
+.skill-entry-summary p {
   font-size: 12px;
   color: var(--text-sub);
-  line-height: 1.4;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.skill-expand-arrow {
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.skill-entry.expanded .skill-expand-arrow {
+  transform: rotate(180deg);
+  color: var(--accent-cyan);
+}
+
+/* Chi tiết các cấp độ khi mở rộng */
+.skill-levels-detail {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.2s ease;
+}
+
+.skill-entry.expanded .skill-levels-detail {
+  display: block;
+}
+
+.skill-progression-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.prog-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-sub);
+}
+
+.prog-badge {
+  font-weight: 800;
+  font-size: 10px;
+  color: var(--accent-gold);
+  background: rgba(255, 213, 79, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.prog-text b {
+  color: #fff;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -890,8 +1236,8 @@ body {
 .event-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 14px 16px;
 }
 
 .event-title {
@@ -908,14 +1254,14 @@ body {
 
 .daily-streak {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 .day-box {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 8px 4px;
   display: flex;
   flex-direction: column;
@@ -930,27 +1276,38 @@ body {
 }
 
 .day-reward {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--accent-gold);
 }
 
 .day-box.claimed {
   opacity: 0.5;
+  background: rgba(76, 175, 80, 0.08);
+  border-color: rgba(76, 175, 80, 0.3);
 }
 
 .day-check {
   color: var(--accent-green);
-  font-size: 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.day-status {
+  font-size: 9.5px;
+  color: var(--text-muted);
 }
 
 .day-box.active {
   border-color: var(--accent-gold);
-  background: rgba(255, 213, 79, 0.12);
+  background: rgba(255, 213, 79, 0.15);
+  box-shadow: 0 0 12px rgba(255, 213, 79, 0.3);
 }
 
 .day-box.special {
+  grid-column: span 2;
   border-color: var(--accent-cyan);
+  background: rgba(79, 195, 247, 0.12);
 }
 
 .quest-list {
@@ -964,18 +1321,30 @@ body {
   align-items: center;
   justify-content: space-between;
   background: var(--bg-card);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quest-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .quest-info b {
   font-size: 13px;
-  display: block;
+  color: #fff;
 }
 
 .quest-info small {
   font-size: 11px;
   color: var(--text-sub);
+}
+
+.quest-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .quest-reward {
@@ -1016,18 +1385,23 @@ body {
   gap: 3px;
   cursor: pointer;
   height: 100%;
+  position: relative;
   transition: color 0.15s ease, transform 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .nav-tab .nav-icon {
   font-size: 20px;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
 .nav-tab .nav-label {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3px;
+  transition: color 0.15s ease;
 }
 
 .nav-tab:active {
@@ -1039,7 +1413,28 @@ body {
 }
 
 .nav-tab.active .nav-icon {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.15);
+  filter: drop-shadow(0 0 6px rgba(79, 195, 247, 0.6));
+}
+
+.nav-tab.active .nav-label {
+  color: #fff;
+  font-weight: 800;
+}
+
+.nav-tab.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 28px;
+  height: 3px;
+  background: var(--accent-cyan);
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.nav-tab.nav-main.active::after {
+  display: none;
 }
 
 /* Nút Chiến Đấu chính giữa: Nhô cao & nổi bật */

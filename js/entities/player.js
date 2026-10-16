@@ -9,18 +9,24 @@ class Player {
     const p = CONFIG.player;
     const lv = (id) => meta[id] || 0; // level nâng cấp vĩnh viễn
 
+    let eq = { weapon: 1, armor: 1, boots: 1, amulet: 1 };
+    try {
+      const s = localStorage.getItem("shadowSurvivors.equip");
+      if (s) eq = Object.assign(eq, JSON.parse(s));
+    } catch (e) {}
+
     this.x = CONFIG.canvasWidth / 2;
     this.y = CONFIG.canvasHeight / 2;
     this.radius = p.radius;
-    this.speed = p.speed * (1 + 0.03 * lv("speed"));
-    this.maxHp = p.maxHp + 10 * lv("maxhp");
+    this.speed = p.speed * (1 + 0.03 * lv("speed") + 0.025 * ((eq.boots || 1) - 1));
+    this.maxHp = p.maxHp + 10 * lv("maxhp") + 25 * ((eq.armor || 1) - 1);
     this.hp = this.maxHp;
     this.hpRegen = p.hpRegenPerSec + 0.2 * lv("regen");
-    this.damage = p.baseDamage * (1 + 0.06 * lv("damage"));
+    this.damage = (p.baseDamage + 3 * ((eq.weapon || 1) - 1)) * (1 + 0.06 * lv("damage"));
     // Giảm cooldown 4%/level, không giảm quá 60% tổng thể
     this.attackCooldown = p.baseAttackCooldown * Math.max(0.4, 1 - 0.04 * lv("attackspeed"));
     this.invulnTime = p.invulnTime;
-    this.magnetRange = p.magnetRange * (1 + 0.1 * lv("magnet"));
+    this.magnetRange = (p.magnetRange + 15 * ((eq.amulet || 1) - 1)) * (1 + 0.1 * lv("magnet"));
     this.pickupRange = p.pickupRange;
 
     this.level = 1;

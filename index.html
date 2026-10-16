@@ -88,6 +88,9 @@
         </div>
       </header>
 
+      <!-- Thông báo nổi Toast -->
+      <div id="lobby-toast" class="lobby-toast hidden"></div>
+
       <!-- Nội dung 5 Tab chính -->
       <main class="lobby-content">
 
@@ -98,80 +101,130 @@
             <p class="panel-desc">Dùng coin 🪙 SSC nhặt từ quái để nâng cấp vĩnh viễn</p>
           </div>
 
-          <!-- Rương may mắn hàng ngày -->
-          <div class="shop-lucky-chest">
-            <div class="chest-icon">🎁</div>
-            <div class="chest-info">
-              <b>Rương Báu Miễn Phí</b>
-              <small id="chest-status">Nhận ngẫu nhiên 15 ~ 50 SSC mỗi ngày</small>
+          <!-- Gói tiếp tế & Quà tặng miễn phí -->
+          <div class="shop-free-section">
+            <h3 class="section-title">🎁 Tiếp Tế Miễn Phí</h3>
+            <div class="free-cards-grid">
+              <!-- Rương may mắn hàng ngày -->
+              <div class="shop-lucky-chest">
+                <div class="chest-icon">🎁</div>
+                <div class="chest-info">
+                  <b>Rương May Mắn</b>
+                  <small id="chest-status">Nhận ngẫu nhiên 15 ~ 50 SSC</small>
+                </div>
+                <button id="btn-claim-chest" class="btn small primary">MỞ RƯƠNG</button>
+              </div>
+
+              <!-- Gói tân thủ -->
+              <div class="shop-supply-card">
+                <div class="supply-icon">⚡</div>
+                <div class="supply-info">
+                  <b>Gói Tiếp Tế Tân Thủ</b>
+                  <small id="starter-status">Tặng ngay 100 SSC khởi nghiệp</small>
+                </div>
+                <button id="btn-claim-starter" class="btn small gold-btn">NHẬN NGAY</button>
+              </div>
             </div>
-            <button id="btn-claim-chest" class="btn small primary">MỞ RƯƠNG</button>
           </div>
 
           <!-- Danh sách thẻ nâng cấp vĩnh viễn -->
-          <div id="meta-shop" class="shop-grid"></div>
+          <div class="meta-section">
+            <h3 class="section-title">⚡ Cường Hóa Chỉ Số Vĩnh Viễn</h3>
+            <div id="meta-shop" class="shop-grid"></div>
+          </div>
         </section>
 
         <!-- TAB 2: TRANG BỊ (EQUIPMENT) -->
         <section id="tab-equip" class="tab-panel hidden">
           <div class="panel-header">
             <h2>🛡️ TRANG BỊ & CHỈ SỐ</h2>
-            <p class="panel-desc">Trang bị cường hóa sức mạnh khởi đầu của nhân vật</p>
+            <p class="panel-desc">Quản lý trang bị, cường hóa và xem sức mạnh nhân vật</p>
           </div>
 
-          <!-- Tổng quan nhân vật -->
+          <!-- Tổng quan nhân vật & Chỉ số chiến đấu -->
           <div class="equip-character-preview">
             <div class="character-circle">
               <span class="char-avatar">🧙‍♂️</span>
               <div class="circle-halo"></div>
             </div>
             <div class="char-summary">
-              <h3>Bóng Đêm Hộ Vệ</h3>
+              <h3>Bóng Đêm Hộ Vệ <span class="char-level-badge">Cấp 1</span></h3>
               <p>Chiến binh bóng tối mang sức mạnh hủy diệt</p>
             </div>
           </div>
 
-          <!-- 4 Ô trang bị -->
-          <div class="equip-slots">
-            <div class="slot-card active">
-              <span class="slot-icon">🗡️</span>
-              <div class="slot-info">
-                <b>Kiếm Hắc Ám</b>
-                <small>Vũ khí chính · ST +12</small>
+          <!-- 4 Chỉ số Lực Chiến Cơ Bản -->
+          <div class="char-stats-grid">
+            <div class="stat-box">
+              <span class="stat-box-icon">⚔️</span>
+              <div class="stat-box-body">
+                <small>Sát thương</small>
+                <b id="stat-val-damage">10</b>
               </div>
-              <span class="slot-tag">Trang bị</span>
             </div>
-            <div class="slot-card active">
-              <span class="slot-icon">🛡️</span>
-              <div class="slot-info">
-                <b>Áo Giáp Thép</b>
-                <small>Giáp ngực · Máu +100</small>
+            <div class="stat-box">
+              <span class="stat-box-icon">❤️</span>
+              <div class="stat-box-body">
+                <small>Máu tối đa</small>
+                <b id="stat-val-hp">100</b>
               </div>
-              <span class="slot-tag">Trang bị</span>
             </div>
-            <div class="slot-card">
-              <span class="slot-icon">💍</span>
-              <div class="slot-info">
-                <b>Nhẫn Gió Nhẹ</b>
-                <small>Phụ kiện · Tốc độ +10%</small>
+            <div class="stat-box">
+              <span class="stat-box-icon">👟</span>
+              <div class="stat-box-body">
+                <small>Tốc chạy</small>
+                <b id="stat-val-speed">100%</b>
               </div>
-              <span class="slot-tag green">Đang bật</span>
             </div>
-            <div class="slot-card">
-              <span class="slot-icon">📿</span>
-              <div class="slot-info">
-                <b>Bùa Hút Hồn</b>
-                <small>Dây chuyền · Tầm hút +20%</small>
+            <div class="stat-box">
+              <span class="stat-box-icon">🧲</span>
+              <div class="stat-box-body">
+                <small>Tầm hút ngọc</small>
+                <b id="stat-val-magnet">100</b>
               </div>
-              <span class="slot-tag green">Đang bật</span>
+            </div>
+          </div>
+
+          <!-- 4 Ô trang bị đang mặc (Có nút CƯỜNG HÓA hoạt động thật) -->
+          <div class="equip-section">
+            <h3 class="section-title">⚔️ Trang Bị Đang Đeo (Bấm để Cường Hóa)</h3>
+            <div id="equip-slots-container" class="equip-slots"></div>
+          </div>
+
+          <!-- Túi đồ dự phòng (Kho đồ) -->
+          <div class="inventory-section">
+            <h3 class="section-title">🎒 Túi Đồ Dự Phòng</h3>
+            <div class="inventory-grid">
+              <div class="inventory-item">
+                <span class="inv-icon">🔮</span>
+                <div class="inv-info">
+                  <b>Trượng Hư Không</b>
+                  <small>Giảm hồi chiêu kỹ năng 10%</small>
+                </div>
+                <button class="btn mini primary" id="btn-equip-wand">Đổi Món</button>
+              </div>
+              <div class="inventory-item">
+                <span class="inv-icon">💍</span>
+                <div class="inv-info">
+                  <b>Nhẫn Bạo Kích</b>
+                  <small>Tăng 8% tỉ lệ bạo kích đạn</small>
+                </div>
+                <button class="btn mini primary" id="btn-equip-ring">Đổi Món</button>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- TAB 3: CHIẾN ĐẤU (BATTLE - TAB MẶC ĐỊNH) -->
         <section id="tab-battle" class="tab-panel">
+          <div class="panel-header">
+            <h2>⚔️ CHIẾN TRƯỜNG SINH TỒN</h2>
+            <p class="panel-desc">Chọn ải thử thách, chỉnh phím bấm và bắt đầu xuất trận</p>
+          </div>
+
+          <!-- Hero Stage Card -->
           <div class="battle-hero-card">
-            <div class="map-badge">ẢI 1 · RỪNG BÓNG ĐÊM</div>
+            <div id="battle-stage-badge" class="map-badge">ẢI 1 · RỪNG BÓNG ĐÊM</div>
             <div class="battle-stage-visual">
               <div class="stage-portal">
                 <span class="portal-boss">👾</span>
@@ -179,8 +232,30 @@
               </div>
             </div>
             <div class="stage-info">
-              <h3>Mục Tiêu Sống Sót: 10 Phút</h3>
-              <p>Boss khổng lồ xuất hiện ở các phút <b>2</b>, <b>5</b> và <b>8</b>!</p>
+              <h3 id="battle-stage-title">Mục Tiêu Sống Sót: 10 Phút</h3>
+              <p id="battle-stage-desc">Boss khổng lồ xuất hiện ở các phút <b>2</b>, <b>5</b> và <b>8</b>!</p>
+            </div>
+          </div>
+
+          <!-- Chọn Bản Đồ (Stage Select) -->
+          <div class="stage-selector-wrap">
+            <span class="quick-title">🗺️ Chọn Ải Chiến Đấu:</span>
+            <div class="stage-selector-grid">
+              <button type="button" class="stage-card active" data-stage="1">
+                <div class="stage-icon">🌲</div>
+                <div class="stage-name">Ải 1: Rừng Bóng Đêm</div>
+                <small class="stage-tag">Đang chọn</small>
+              </button>
+              <button type="button" class="stage-card" data-stage="2">
+                <div class="stage-icon">🌋</div>
+                <div class="stage-name">Ải 2: Hang Dung Nham</div>
+                <small class="stage-tag hot">Khó · +20% Tốc</small>
+              </button>
+              <button type="button" class="stage-card" data-stage="3">
+                <div class="stage-icon">🌌</div>
+                <div class="stage-name">Ải 3: Đỉnh Hư Không</div>
+                <small class="stage-tag dark">Ác Mộng</small>
+              </button>
             </div>
           </div>
 
@@ -208,7 +283,7 @@
             <button id="btn-start-battle" class="btn battle-start-btn">
               <span class="sword-icon">⚔️</span>
               <span class="btn-text">
-                <b>XUẤT TRẬN</b>
+                <b>XUẤT TRẬN NGAY</b>
                 <small>Bắt đầu cuộc chiến sinh tồn</small>
               </span>
             </button>
@@ -218,134 +293,113 @@
         <!-- TAB 4: KỸ NĂNG (SKILLS) -->
         <section id="tab-skills" class="tab-panel hidden">
           <div class="panel-header">
-            <h2>⚡ THƯ VIỆN KỸ NĂNG</h2>
-            <p class="panel-desc">Các chiêu thức bí truyền xuất hiện khi lên cấp trong trận</p>
+            <h2>⚡ BÍ KÍP KỸ NĂNG</h2>
+            <p class="panel-desc">Nhấp vào kỹ năng để xem chi tiết cấp độ (Lv 1 ~ Lv 5) và combo</p>
           </div>
 
-          <div class="skills-catalog">
-            <div class="skill-entry">
-              <div class="skill-entry-icon">⚡</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Sét Dây Chuyền</b>
-                  <span class="skill-max">Tối đa Lv.5</span>
-                </div>
-                <p>Tự động phóng tia sét giật nảy qua nhiều mục tiêu quái vật gần nhau mỗi 4 giây.</p>
-              </div>
-            </div>
-            <div class="skill-entry">
-              <div class="skill-entry-icon">💥</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Sóng Xung Kích</b>
-                  <span class="skill-max">Tối đa Lv.5</span>
-                </div>
-                <p>Phát ra một luồng sóng chấn động đẩy văng và gây sát thương lớn lên quái áp sát.</p>
-              </div>
-            </div>
-            <div class="skill-entry">
-              <div class="skill-entry-icon">🌀</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Lỗ Đen Không Gian</b>
-                  <span class="skill-max">Tối đa Lv.5</span>
-                </div>
-                <p>Mở một hố đen hút toàn bộ quái vật trong khu vực lại gần rồi phát nổ hủy diệt.</p>
-              </div>
-            </div>
-            <div class="skill-entry">
-              <div class="skill-entry-icon">⏳</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Dòng Chảy Thời Gian</b>
-                  <span class="skill-max">Tối đa Lv.5</span>
-                </div>
-                <p>Bóp nghẹt thời gian, làm chậm 60% toàn bộ chuyển động của quái vật trên bản đồ.</p>
-              </div>
-            </div>
-            <div class="skill-entry">
-              <div class="skill-entry-icon">🔮</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Búp Bê Voodoo</b>
-                  <span class="skill-max">Tối đa Lv.5</span>
-                </div>
-                <p>Nguyền rủa: Khi 1 quái vật chết, kẻ địch đứng gần nó nhất cũng phải gánh thêm sát thương.</p>
-              </div>
-            </div>
-            <div class="skill-entry">
-              <div class="skill-entry-icon">🩸</div>
-              <div class="skill-entry-body">
-                <div class="skill-entry-title">
-                  <b>Hợp Đồng Máu</b>
-                  <span class="skill-max">Tối đa Lv.3</span>
-                </div>
-                <p>Đánh đổi sinh mệnh: Giảm 15% Max HP để nhận lấy tăng vọt 35% toàn bộ sát thương đạn!</p>
-              </div>
-            </div>
-          </div>
+          <div id="skills-catalog-container" class="skills-catalog"></div>
         </section>
 
         <!-- TAB 5: SỰ KIỆN (EVENT) -->
         <section id="tab-event" class="tab-panel hidden">
           <div class="panel-header">
             <h2>🎁 SỰ KIỆN & ĐIỂM DANH</h2>
-            <p class="panel-desc">Hoàn thành nhiệm vụ nhận thêm nhiều coin SSC miễn phí</p>
+            <p class="panel-desc">Điểm danh 7 ngày và làm nhiệm vụ nhận hàng trăm coin SSC</p>
           </div>
 
-          <!-- Chuỗi điểm danh -->
+          <!-- Chuỗi điểm danh 7 ngày -->
           <div class="event-card">
-            <h3 class="event-title">📅 Điểm Danh Nhận Quà</h3>
-            <p class="event-sub">Điểm danh mỗi ngày nhận thưởng coin SSC miễn phí</p>
+            <h3 class="event-title">📅 Chuỗi Điểm Danh 7 Ngày</h3>
+            <p class="event-sub">Điểm danh mỗi ngày để gom thật nhiều SSC nâng cấp nhân vật</p>
             <div class="daily-streak">
               <div class="day-box claimed">
                 <span class="day-num">Ngày 1</span>
                 <span class="day-reward">🪙 10</span>
-                <span class="day-check">✔</span>
+                <span class="day-check">✔ Đã nhận</span>
               </div>
               <div class="day-box active" id="daily-box-today">
                 <span class="day-num">Hôm nay</span>
                 <span class="day-reward">🪙 25</span>
-                <button id="btn-daily-claim" class="btn mini primary">Nhận</button>
+                <button id="btn-daily-claim" class="btn mini primary">NHẬN 25🪙</button>
               </div>
               <div class="day-box">
                 <span class="day-num">Ngày 3</span>
                 <span class="day-reward">🪙 35</span>
+                <span class="day-status">Khóa</span>
               </div>
               <div class="day-box">
                 <span class="day-num">Ngày 4</span>
                 <span class="day-reward">🪙 50</span>
+                <span class="day-status">Khóa</span>
+              </div>
+              <div class="day-box">
+                <span class="day-num">Ngày 5</span>
+                <span class="day-reward">🪙 65</span>
+                <span class="day-status">Khóa</span>
+              </div>
+              <div class="day-box">
+                <span class="day-num">Ngày 6</span>
+                <span class="day-reward">🪙 80</span>
+                <span class="day-status">Khóa</span>
               </div>
               <div class="day-box special">
                 <span class="day-num">Ngày 7</span>
-                <span class="day-reward">🪙 100</span>
+                <span class="day-reward">🪙 150</span>
+                <span class="day-status">👑 Rương VIP</span>
               </div>
             </div>
           </div>
 
-          <!-- Nhiệm vụ ngày -->
+          <!-- Nhiệm vụ hàng ngày có nút nhận thật -->
           <div class="event-card">
-            <h3 class="event-title">🎯 Nhiệm Vụ Hằng Ngày</h3>
+            <h3 class="event-title">🎯 Nhiệm Vụ Hàng Ngày</h3>
             <div class="quest-list">
               <div class="quest-item">
                 <div class="quest-info">
-                  <b>Diệt 50 quái vật</b>
-                  <small>Tiêu diệt kẻ địch trong bất kỳ trận nào</small>
+                  <b>🌟 Đăng nhập hôm nay</b>
+                  <small>Mở game điểm danh hàng ngày</small>
                 </div>
-                <span class="quest-reward">+15 SSC</span>
+                <div class="quest-action">
+                  <span class="quest-reward">+15 SSC</span>
+                  <button id="btn-quest-login" class="btn mini primary">Nhận</button>
+                </div>
               </div>
               <div class="quest-item">
                 <div class="quest-info">
-                  <b>Sống sót 2 phút</b>
+                  <b>⚔️ Diệt 50 quái vật</b>
+                  <small>Tiêu diệt kẻ địch trong bất kỳ trận nào</small>
+                </div>
+                <div class="quest-action">
+                  <span class="quest-reward">+20 SSC</span>
+                  <button id="btn-quest-kills" class="btn mini primary">Nhận</button>
+                </div>
+              </div>
+              <div class="quest-item">
+                <div class="quest-info">
+                  <b>⏱️ Sống sót 2 phút</b>
                   <small>Chống chọi qua đợt Boss đầu tiên</small>
                 </div>
-                <span class="quest-reward">+20 SSC</span>
+                <div class="quest-action">
+                  <span class="quest-reward">+25 SSC</span>
+                  <button id="btn-quest-survive" class="btn mini primary">Nhận</button>
+                </div>
+              </div>
+              <div class="quest-item">
+                <div class="quest-info">
+                  <b>🔨 Cường hóa 1 lần</b>
+                  <small>Cường hóa trang bị hoặc nâng cấp trong shop</small>
+                </div>
+                <div class="quest-action">
+                  <span class="quest-reward">+30 SSC</span>
+                  <button id="btn-quest-upgrade" class="btn mini primary">Nhận</button>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
       </main>
+
 
       <!-- ══════════════════════════════════════════════════════ -->
       <!-- THANH ĐIỀU HƯỚNG 5 TAB Ở ĐÁY (BOTTOM NAVIGATION BAR)    -->
