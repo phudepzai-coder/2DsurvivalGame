@@ -14,7 +14,7 @@ class Game {
     Sprites.init(); // nạp hình nhân vật/quái từ assets/ (nếu có)
     window._gameRef = this; // để enemy vẽ mắt hướng về player (đơn giản hóa)
 
-    this.state = "menu";
+    this.state = "splash";
     this.reset();
 
     this.canvas.addEventListener("click", () => {
@@ -57,8 +57,9 @@ class Game {
 
   startRun() {
     this.reset();
-    this.ui.hideAll();
     this.state = "playing";
+    this.ui.hideAll();
+    this.ui.showScreen("battle");
   }
 
   // ============ VÒNG LẶP CHÍNH ============
@@ -426,12 +427,12 @@ class Game {
     this.ui.showGameOver(this.elapsed, this.player.level, this.kills, this.runSsc, Save.loggedIn());
   }
 
-  /** Quay về menu chính (sau Game Over) */
+  /** Quay về sảnh chính (sau Game Over) */
   returnToMenu() {
     this.reset();
     this.ui.hideAll();
-    this.state = "menu";
-    this.ui.showMenu();
+    this.state = "lobby";
+    this.ui.showScreen("lobby");
   }
 
   openLevelUp() {
@@ -470,7 +471,9 @@ class Game {
 
     this.drawBackground(ctx);
 
-    if (this.state !== "menu") {
+    const inBattle = this.state === "playing" || this.state === "levelup" || this.state === "paused" || this.state === "gameover";
+
+    if (inBattle) {
       for (const g of this.gems) g.draw(ctx);
       for (const c of this.coins) c.draw(ctx);
       for (const e of this.enemies) e.draw(ctx);
@@ -481,7 +484,7 @@ class Game {
 
     ctx.restore(); // hết rung — HUD không rung
 
-    if (this.state !== "menu") this.drawHUD(ctx);
+    if (inBattle) this.drawHUD(ctx);
 
     if (this.state === "paused") this.drawPauseText(ctx);
   }
