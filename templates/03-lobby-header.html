@@ -1,0 +1,27 @@
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 2. SẢNH CHÍNH VỚI 5 TAB Ở ĐÁY (LOBBY HUB)             -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="screen-lobby" class="screen hidden">
+      <!-- Top Bar: Thông tin người chơi & tiền tệ -->
+      <header class="lobby-header">
+        <div class="header-user">
+          <div class="header-avatar">👤</div>
+          <div class="header-user-info">
+            <span id="lobby-username" class="user-name">Chiến Binh</span>
+            <span class="user-rank">Cấp 1 · Tân thủ</span>
+          </div>
+        </div>
+        <div class="header-stats">
+          <div class="stat-pill ssc-pill">
+            <span class="stat-icon">🪙</span>
+            <b id="lobby-ssc">0</b>
+          </div>
+          <button id="btn-settings-open" class="icon-btn" title="Cài đặt">⚙️</button>
+        </div>
+      </header>
+
+      <!-- Thông báo nổi Toast -->
+      <div id="lobby-toast" class="lobby-toast hidden"></div>
+
+      <!-- Nội dung 5 Tab chính -->
+      <main class="lobby-content">

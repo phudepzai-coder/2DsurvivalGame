@@ -1,0 +1,74 @@
+        <!-- TAB 3: CHIẾN ĐẤU (BATTLE - TAB MẶC ĐỊNH) -->
+        <section id="tab-battle" class="tab-panel">
+          <div class="panel-header">
+            <h2>⚔️ CHIẾN TRƯỜNG SINH TỒN</h2>
+            <p class="panel-desc">Chọn ải thử thách, chỉnh phím bấm và bắt đầu xuất trận</p>
+          </div>
+
+          <!-- Hero Stage Card -->
+          <div class="battle-hero-card">
+            <div id="battle-stage-badge" class="map-badge">ẢI 1 · RỪNG BÓNG ĐÊM</div>
+            <div class="battle-stage-visual">
+              <div class="stage-portal">
+                <span class="portal-boss">👾</span>
+                <span class="portal-char">🧙‍♂️</span>
+              </div>
+            </div>
+            <div class="stage-info">
+              <h3 id="battle-stage-title">Mục Tiêu Sống Sót: 10 Phút</h3>
+              <p id="battle-stage-desc">Boss khổng lồ xuất hiện ở các phút <b>2</b>, <b>5</b> và <b>8</b>!</p>
+            </div>
+          </div>
+
+          <!-- Chọn Bản Đồ (Stage Select) -->
+          <div class="stage-selector-wrap">
+            <span class="quick-title">🗺️ Chọn Ải Chiến Đấu:</span>
+            <div class="stage-selector-grid">
+              <button type="button" class="stage-card active" data-stage="1">
+                <div class="stage-icon">🌲</div>
+                <div class="stage-name">Ải 1: Rừng Bóng Đêm</div>
+                <small class="stage-tag">Đang chọn</small>
+              </button>
+              <button type="button" class="stage-card" data-stage="2">
+                <div class="stage-icon">🌋</div>
+                <div class="stage-name">Ải 2: Hang Dung Nham</div>
+                <small class="stage-tag hot">Khó · +20% Tốc</small>
+              </button>
+              <button type="button" class="stage-card" data-stage="3">
+                <div class="stage-icon">🌌</div>
+                <div class="stage-name">Ải 3: Đỉnh Hư Không</div>
+                <small class="stage-tag dark">Ác Mộng</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- Lựa chọn chế độ điều khiển nhanh -->
+          <div class="control-quick-select">
+            <span class="quick-title">🎮 Chế độ điều khiển:</span>
+            <div class="quick-buttons">
+              <button type="button" class="ctrl-card active" data-mode="touch_joystick">
+                <span class="ctrl-icon">📱</span>
+                <span class="ctrl-name">Joystick (Điện thoại)</span>
+              </button>
+              <button type="button" class="ctrl-card" data-mode="mouse_wasd">
+                <span class="ctrl-icon">🖱️</span>
+                <span class="ctrl-name">Chuột / WASD (PC)</span>
+              </button>
+              <button type="button" class="ctrl-card" data-mode="wasd_aim">
+                <span class="ctrl-icon">⌨️</span>
+                <span class="ctrl-name">WASD + Ngắm bắn</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Nút Xuất Trận Siêu To -->
+          <div class="battle-cta-wrap">
+            <button id="btn-start-battle" class="btn battle-start-btn">
+              <span class="sword-icon">⚔️</span>
+              <span class="btn-text">
+                <b>XUẤT TRẬN NGAY</b>
+                <small>Bắt đầu cuộc chiến sinh tồn</small>
+              </span>
+            </button>
+          </div>
+        </section>

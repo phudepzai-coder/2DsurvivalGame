@@ -1,0 +1,56 @@
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 1. MÀN HÌNH CHỜ / ĐĂNG NHẬP (SPLASH SCREEN)          -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="screen-splash" class="screen">
+      <div class="splash-content">
+        <!-- Logo game -->
+        <div class="game-logo">
+          <div class="logo-badge">⚔️ ROGUELITE SURVIVAL</div>
+          <h1 class="logo-title">SHADOW<br><span class="highlight">SURVIVORS</span></h1>
+          <p class="logo-sub">Sống sót qua làn sóng quái vật vô tận</p>
+        </div>
+
+        <!-- Khung tài khoản -->
+        <div id="splash-account-box" class="account-card">
+          <!-- Form đăng nhập / đăng ký -->
+          <div id="login-form">
+            <h3 class="box-title">ĐĂNG NHẬP / ĐĂNG KÝ</h3>
+            <div class="input-group">
+              <span class="input-icon">👤</span>
+              <input id="inp-username" placeholder="Tên tài khoản (tối thiểu 3 ký tự)" maxlength="16" autocomplete="off" />
+            </div>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input id="inp-pin" type="password" placeholder="Mã PIN (tối thiểu 4 số)" maxlength="8" />
+            </div>
+            <div class="auth-actions">
+              <button id="btn-login" class="btn primary small">Đăng nhập</button>
+              <button id="btn-register" class="btn ghost small">Đăng ký</button>
+            </div>
+            <p id="auth-msg"></p>
+          </div>
+
+          <!-- Trạng thái đã đăng nhập -->
+          <div id="account-info" class="hidden">
+            <div class="acc-profile">
+              <div class="acc-avatar">👤</div>
+              <div class="acc-details">
+                <span class="acc-label">Đang đăng nhập:</span>
+                <b id="acc-name" class="acc-name">Chiến Binh</b>
+                <span class="ssc-pill">🪙 <b id="acc-ssc">0</b> SSC</span>
+              </div>
+            </div>
+            <button id="btn-logout" class="link-btn">Đổi tài khoản khác</button>
+          </div>
+        </div>
+
+        <!-- Nút chính vào game -->
+        <div class="splash-actions">
+          <button id="btn-enter-lobby" class="btn cta-large">
+            <span class="cta-shine"></span>
+            ▶ VÀO GAME
+          </button>
+          <button id="btn-guest" class="link-btn guest-btn">Chơi ngay (Chế độ Khách) →</button>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,80 @@
+        <!-- TAB 2: TRANG BỊ (EQUIPMENT) -->
+        <section id="tab-equip" class="tab-panel hidden">
+          <div class="panel-header">
+            <h2>🛡️ TRANG BỊ & CHỈ SỐ</h2>
+            <p class="panel-desc">Quản lý trang bị, cường hóa và xem sức mạnh nhân vật</p>
+          </div>
+
+          <!-- Tổng quan nhân vật & Chỉ số chiến đấu -->
+          <div class="equip-character-preview">
+            <div class="character-circle">
+              <span class="char-avatar">🧙‍♂️</span>
+              <div class="circle-halo"></div>
+            </div>
+            <div class="char-summary">
+              <h3>Bóng Đêm Hộ Vệ <span class="char-level-badge">Cấp 1</span></h3>
+              <p>Chiến binh bóng tối mang sức mạnh hủy diệt</p>
+            </div>
+          </div>
+
+          <!-- 4 Chỉ số Lực Chiến Cơ Bản -->
+          <div class="char-stats-grid">
+            <div class="stat-box">
+              <span class="stat-box-icon">⚔️</span>
+              <div class="stat-box-body">
+                <small>Sát thương</small>
+                <b id="stat-val-damage">10</b>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-icon">❤️</span>
+              <div class="stat-box-body">
+                <small>Máu tối đa</small>
+                <b id="stat-val-hp">100</b>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-icon">👟</span>
+              <div class="stat-box-body">
+                <small>Tốc chạy</small>
+                <b id="stat-val-speed">100%</b>
+              </div>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box-icon">🧲</span>
+              <div class="stat-box-body">
+                <small>Tầm hút ngọc</small>
+                <b id="stat-val-magnet">100</b>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Ô trang bị đang mặc (Có nút CƯỜNG HÓA hoạt động thật) -->
+          <div class="equip-section">
+            <h3 class="section-title">⚔️ Trang Bị Đang Đeo (Bấm để Cường Hóa)</h3>
+            <div id="equip-slots-container" class="equip-slots"></div>
+          </div>
+
+          <!-- Túi đồ dự phòng (Kho đồ) -->
+          <div class="inventory-section">
+            <h3 class="section-title">🎒 Túi Đồ Dự Phòng</h3>
+            <div class="inventory-grid">
+              <div class="inventory-item">
+                <span class="inv-icon">🔮</span>
+                <div class="inv-info">
+                  <b>Trượng Hư Không</b>
+                  <small>Giảm hồi chiêu kỹ năng 10%</small>
+                </div>
+                <button class="btn mini primary" id="btn-equip-wand">Đổi Món</button>
+              </div>
+              <div class="inventory-item">
+                <span class="inv-icon">💍</span>
+                <div class="inv-info">
+                  <b>Nhẫn Bạo Kích</b>
+                  <small>Tăng 8% tỉ lệ bạo kích đạn</small>
+                </div>
+                <button class="btn mini primary" id="btn-equip-ring">Đổi Món</button>
+              </div>
+            </div>
+          </div>
+        </section>

@@ -40,6 +40,8 @@ while ($true) {
             $timeStr = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
             Write-Host "`n[*] Phat hien thay doi! Dang tu dong dong bo len GitHub ($timeStr)..." -ForegroundColor Yellow
             
+            $buildScript = Join-Path $PSScriptRoot "build-html.ps1"
+            if (Test-Path $buildScript) { & $buildScript | Out-Null }
             git add .
             git commit -m "Tu dong dong bo: $timeStr" | Out-Null
             $pushOut = git push origin main 2>&1

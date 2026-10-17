@@ -1,0 +1,36 @@
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 3. MÀN HÌNH TRẬN ĐẤU CANVAS (BATTLE SCREEN)          -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="screen-battle" class="screen hidden">
+      <div id="canvas-container">
+        <canvas id="game" width="1280" height="720"></canvas>
+
+        <!-- Nút Tạm dừng trên HUD -->
+        <button id="btn-mobile-pause" class="hud-pause-btn" title="Tạm dừng / Tiếp tục">⏸️</button>
+
+        <!-- Vòng tròn Joystick ảo cho điện thoại -->
+        <div id="joystick-zone" class="hidden">
+          <div id="joystick-base">
+            <div id="joystick-stick"></div>
+          </div>
+        </div>
+
+        <!-- Bảng chọn nâng cấp khi Level Up -->
+        <div id="overlay-levelup" class="overlay hidden">
+          <h2>⬆️ LEVEL UP!</h2>
+          <p class="sub">Chọn 1 trong 3 nâng cấp sức mạnh</p>
+          <div id="upgrade-cards"></div>
+          <p class="hint">Chạm vào thẻ hoặc nhấn phím <b>1</b> / <b>2</b> / <b>3</b></p>
+        </div>
+
+        <!-- Màn hình Game Over -->
+        <div id="overlay-gameover" class="overlay hidden">
+          <h1 class="danger">GAME OVER</h1>
+          <p id="go-stats"></p>
+          <div class="go-buttons">
+            <button id="btn-restart" class="btn primary">CHƠI LẠI</button>
+            <button id="btn-menu" class="btn ghost">🏠 VỀ SẢNH</button>
+          </div>
+        </div>
+      </div>
+    </div>

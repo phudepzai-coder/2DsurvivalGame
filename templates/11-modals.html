@@ -1,0 +1,42 @@
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 4. MODAL CÀI ĐẶT (SETTINGS POPUP)                     -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="modal-settings" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>⚙️ CÀI ĐẶT TRÒ CHƠI</h3>
+          <button id="btn-settings-close" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-item">
+            <label>🎮 Kiểu điều khiển:</label>
+            <div class="setting-ctrl-options">
+              <button type="button" class="ctrl-card" data-mode="touch_joystick">
+                <span class="ctrl-icon">📱</span>
+                <span class="ctrl-name">Joystick (Điện thoại)</span>
+              </button>
+              <button type="button" class="ctrl-card" data-mode="mouse_wasd">
+                <span class="ctrl-icon">🖱️</span>
+                <span class="ctrl-name">Đi theo chuột / WASD</span>
+              </button>
+              <button type="button" class="ctrl-card" data-mode="wasd_aim">
+                <span class="ctrl-icon">⌨️</span>
+                <span class="ctrl-name">WASD + Chuột ngắm</span>
+              </button>
+            </div>
+          </div>
+          <div class="setting-item user-action">
+            <label>👤 Tài khoản:</label>
+            <div class="setting-row">
+              <span id="settings-user-display">Chưa đăng nhập</span>
+              <button id="btn-settings-logout" class="btn small danger">Đăng xuất</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-settings-done" class="btn primary small full">Xong</button>
+        </div>
+      </div>
+    </div>
+
+  </div>

@@ -9,6 +9,13 @@ Write-Host ""
 $rootPath = (Get-Item $PSScriptRoot).Parent.FullName
 Set-Location $rootPath
 
+# 0. Tu dong ghep cac template HTML vao index.html neu co thu muc templates
+$buildScript = Join-Path $PSScriptRoot "build-html.ps1"
+if (Test-Path $buildScript) {
+    & $buildScript
+    Write-Host ""
+}
+
 # 1. Add tat ca file thay doi
 git add .
 
