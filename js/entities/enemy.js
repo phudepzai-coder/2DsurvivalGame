@@ -15,10 +15,11 @@ class Enemy {
     this.y = y;
 
     const minutes = time / 60;
-    this.maxHp = Math.round(base.hp * (1 + minutes * 0.4));       // +40% HP mỗi phút
+    const diff = (window._gameRef && window._gameRef.difficultyData) || { hpMult: 1, speedMult: 1, damageMult: 1 };
+    this.maxHp = Math.max(1, Math.round(base.hp * (1 + minutes * 0.4) * (diff.hpMult || 1)));
     this.hp = this.maxHp;
-    this.speed = base.speed * (1 + Math.min(0.5, minutes * 0.08)); // tăng nhẹ tốc độ, tối đa +50%
-    this.damage = base.damage * (1 + minutes * 0.15);              // +15% sát thương mỗi phút
+    this.speed = base.speed * (1 + Math.min(0.5, minutes * 0.08)) * (diff.speedMult || 1);
+    this.damage = base.damage * (1 + minutes * 0.15) * (diff.damageMult || 1);
     this.radius = base.radius;
     this.color = base.color;
     this.xpValue = base.xp;

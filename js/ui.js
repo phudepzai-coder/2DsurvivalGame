@@ -21,8 +21,13 @@ class UI {
     this.cardsEl = document.getElementById("upgrade-cards");
     this.goStats = document.getElementById("go-stats");
 
-    // Modal cài đặt
+    // Modal cài đặt & Hòm thư
     this.modalSettings = document.getElementById("modal-settings");
+    this.modalMailbox = document.getElementById("modal-mailbox");
+    this.mailBadge = document.getElementById("mail-badge");
+    this.mailList = document.getElementById("mail-list");
+    this.mailEmpty = document.getElementById("mail-empty");
+    this.mailUnreadCount = document.getElementById("mail-unread-count");
 
     // Form Splash
     this.loginForm = document.getElementById("login-form");
@@ -39,6 +44,8 @@ class UI {
     this.shopEl = document.getElementById("meta-shop");
 
     this.currentTab = "battle";
+    this.selectedStage = "1";
+    this.selectedDifficulty = "normal";
     this.choices = null; // 3 thẻ nâng cấp đang hiển thị
     this.onPick = null;
 
@@ -171,10 +178,33 @@ class UI {
     document.querySelectorAll(".stage-card").forEach((card) => {
       card.addEventListener("click", () => {
         const stage = card.dataset.stage;
+        if (stage === "2" || card.classList.contains("locked")) {
+          this.showToast("🔒 Ải 2 đang được phát triển, hãy chinh phục Ải 1 trước nhé!");
+          return;
+        }
         this.selectedStage = stage;
         this.renderBattleTab();
-        const names = { 1: "Ải 1: Rừng Bóng Đêm", 2: "Ải 2: Hang Dung Nham", 3: "Ải 3: Đỉnh Hư Không" };
-        this.showToast(`🗺️ Đã chọn ${names[stage] || "Ải 1"}`);
+        this.showToast("🗺️ Đã chọn Ải 1: Rừng Bóng Đêm");
+      });
+    });
+
+    // --- Tab 3: Chọn Độ Khó Ải 1 (Dễ / Thường / Ác Mộng) ---
+    document.querySelectorAll(".diff-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        const diff = card.dataset.diff;
+        if (!diff) return;
+        this.selectedDifficulty = diff;
+        if (this.game && this.game.setDifficulty) {
+          this.game.setDifficulty(diff);
+        }
+        this.renderBattleTab();
+
+        const diffNames = {
+          easy: "🟢 Dễ (Tân thủ - x1.0 SSC)",
+          normal: "🟡 Thường (Tiêu chuẩn - x1.5 SSC)",
+          nightmare: "🔴 Ác Mộng (Cực khó - x2.5 SSC)",
+        };
+        this.showToast(`🔥 Đã chọn: ${diffNames[diff] || diff}`);
       });
     });
 
@@ -293,6 +323,30 @@ class UI {
         closeModal();
         this.renderMenu();
         this.showScreen("splash");
+        if (typeof Mailbox !== "undefined" && Mailbox.fetchCloudMails) {
+          Mailbox.fetchCloudMails();
+        }
+      });
+    }
+
+    // --- Modal Hòm Thư Quà Tặng ---
+    const btnMailOpen = document.getElementById("btn-mail-open");
+    const btnMailClose = document.getElementById("btn-mail-close");
+    const btnMailDone = document.getElementById("btn-mail-done");
+    const btnMailClaimAll = document.getElementById("btn-mail-claim-all");
+
+    if (btnMailOpen) {
+      btnMailOpen.addEventListener("click", () => this.openMailbox());
+    }
+    if (btnMailClose) btnMailClose.addEventListener("click", () => this.closeMailbox());
+    if (btnMailDone) btnMailDone.addEventListener("click", () => this.closeMailbox());
+    if (btnMailClaimAll) {
+      btnMailClaimAll.addEventListener("click", () => {
+        if (typeof Mailbox === "undefined") return;
+        const res = Mailbox.claimAll();
+        this.showToast(res.msg);
+        this.renderLobby();
+        this.renderMailbox();
       });
     }
 
@@ -345,6 +399,9 @@ class UI {
       this.inpPin.value = "";
       this.renderMenu();
       this.renderLobby();
+      if (typeof Mailbox !== "undefined" && Mailbox.fetchCloudMails) {
+        Mailbox.fetchCloudMails();
+      }
     } else {
       this.authMsg.style.color = "#ff8a80";
       this.authMsg.textContent = "⚠️ " + result.error;
@@ -373,6 +430,107 @@ class UI {
 
     if (this.lobbyUsername) this.lobbyUsername.textContent = name;
     if (this.lobbySsc) this.lobbySsc.textContent = ssc;
+    this.updateMailBadge();
+  }
+
+  /** Cập nhật chấm đỏ thông báo hòm thư */
+  updateMailBadge() {
+    if (!this.mailBadge) return;
+    const hasUnclaimed = typeof Mailbox !== "undefined" && Mailbox.hasUnclaimed();
+    this.mailBadge.classList.toggle("hidden", !hasUnclaimed);
+  }
+
+  /** Mở popup Hòm thư */
+  openMailbox() {
+    if (!this.modalMailbox) return;
+    this.modalMailbox.classList.remove("hidden");
+    this.renderMailbox();
+    if (typeof Mailbox !== "undefined" && Mailbox.fetchCloudMails) {
+      Mailbox.fetchCloudMails();
+    }
+  }
+
+  /** Đóng popup Hòm thư */
+  closeMailbox() {
+    if (!this.modalMailbox) return;
+    this.modalMailbox.classList.add("hidden");
+    this.updateMailBadge();
+  }
+
+  /** Vẽ danh sách thư quà tặng trong popup Hòm thư */
+  renderMailbox() {
+    if (!this.mailList || typeof Mailbox === "undefined") return;
+
+    const mails = Mailbox.getAllMails();
+    const unclaimedCount = Mailbox.getUnclaimedCount();
+
+    if (this.mailUnreadCount) {
+      this.mailUnreadCount.textContent = unclaimedCount > 0 ? `${unclaimedCount} thư mới` : "Đã nhận hết";
+      this.mailUnreadCount.style.display = unclaimedCount > 0 ? "inline-block" : "none";
+    }
+
+    const btnClaimAll = document.getElementById("btn-mail-claim-all");
+    if (btnClaimAll) {
+      btnClaimAll.disabled = unclaimedCount === 0;
+      btnClaimAll.textContent = unclaimedCount > 0 ? `🎁 Nhận Tất Cả (${unclaimedCount})` : "✔ Đã Nhận Hết";
+    }
+
+    if (mails.length === 0) {
+      this.mailList.innerHTML = "";
+      if (this.mailEmpty) this.mailEmpty.classList.remove("hidden");
+      return;
+    }
+
+    if (this.mailEmpty) this.mailEmpty.classList.add("hidden");
+    this.mailList.innerHTML = "";
+
+    mails.forEach((m) => {
+      const card = document.createElement("div");
+      card.className = "mail-item" + (m.isClaimed ? " claimed" : "");
+
+      const sscVal = m.reward && m.reward.ssc ? m.reward.ssc : 0;
+      const actionHtml = m.isClaimed
+        ? `<span class="mail-claimed-tag">✔ Đã nhận quà</span>`
+        : `<button class="btn mini primary btn-claim-mail" data-id="${m.id}">🎁 Nhận Quà</button>`;
+
+      card.innerHTML = `
+        <div class="mail-item-top">
+          <div class="mail-item-title-group">
+            <span class="mail-item-icon">${m.icon || "✉️"}</span>
+            <div>
+              <div class="mail-item-title">${m.title}</div>
+              <div class="mail-item-meta">
+                <span class="mail-item-sender">Từ: ${m.sender || "Hệ Thống"}</span>
+                <span>·</span>
+                <span class="mail-item-date">${m.date || "Mới"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mail-item-content">${m.content}</div>
+        <div class="mail-item-bottom">
+          <div class="mail-item-reward">
+            <span>🪙</span>
+            <b>+${sscVal} SSC</b>
+          </div>
+          <div class="mail-action">${actionHtml}</div>
+        </div>
+      `;
+
+      if (!m.isClaimed) {
+        const btnClaim = card.querySelector(".btn-claim-mail");
+        if (btnClaim) {
+          btnClaim.addEventListener("click", () => {
+            const res = Mailbox.claimMail(m.id);
+            this.showToast(res.msg);
+            this.renderLobby();
+            this.renderMailbox();
+          });
+        }
+      }
+
+      this.mailList.appendChild(card);
+    });
   }
 
   /** Đồng bộ trạng thái active của bộ chọn chế độ điều khiển */
@@ -537,36 +695,36 @@ class UI {
   renderBattleTab() {
     this.renderControlSelector();
 
-    const stageData = {
-      1: {
-        badge: "ẢI 1 · RỪNG BÓNG ĐÊM",
-        title: "Mục Tiêu Sống Sót: 10 Phút",
-        desc: "Boss khổng lồ xuất hiện ở các phút <b>2</b>, <b>5</b> và <b>8</b>!",
-      },
-      2: {
-        badge: "ẢI 2 · HANG DUNG NHAM",
-        title: "Độ Khó Cao · Quái Tăng Tốc +20%",
-        desc: "Dung nham thiêu đốt, quái chạy nhanh hơn và rơi x1.5 lượng SSC!",
-      },
-      3: {
-        badge: "ẢI 3 · ĐỈNH HƯ KHÔNG",
-        title: "Chế Độ Ác Mộng · Thách Thức Tột Đỉnh",
-        desc: "Bão hư không hủy diệt! Boss xuất hiện mỗi 90 giây liên tục!",
-      },
-    };
+    const currentDiff = this.selectedDifficulty || "normal";
+    const diffInfo = (typeof CONFIG !== "undefined" && CONFIG.difficulties && CONFIG.difficulties[currentDiff])
+      ? CONFIG.difficulties[currentDiff]
+      : { badge: "THƯỜNG", rewardText: "x1.5 SSC", dotClass: "normal", desc: "Trải nghiệm chuẩn mực, quái chạy nhanh hơn và rơi x1.5 Coin SSC!" };
 
+    // 1. Cập nhật active cho 3 thẻ Độ Khó
+    document.querySelectorAll(".diff-card").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.diff === currentDiff);
+    });
+
+    // 2. Cập nhật active cho Ải
     const currentStage = this.selectedStage || "1";
     document.querySelectorAll(".stage-card").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.stage === currentStage);
     });
 
-    const info = stageData[currentStage] || stageData[1];
+    // 3. Cập nhật thông tin trên thẻ Bản Đồ
     const elBadge = document.getElementById("battle-stage-badge");
     const elTitle = document.getElementById("battle-stage-title");
     const elDesc = document.getElementById("battle-stage-desc");
-    if (elBadge) elBadge.textContent = info.badge;
-    if (elTitle) elTitle.textContent = info.title;
-    if (elDesc) elDesc.innerHTML = info.desc;
+    const elDiffDot = document.getElementById("map-diff-dot");
+    const elDiffLabel = document.getElementById("map-diff-label");
+    const elStartSub = document.getElementById("btn-start-sub");
+
+    if (elBadge) elBadge.textContent = "ẢI 1 · RỪNG BÓNG ĐÊM";
+    if (elTitle) elTitle.textContent = "Rừng Bóng Đêm (Dark Forest)";
+    if (elDesc) elDesc.innerHTML = diffInfo.desc || "Khu rừng cổ thụ ngàn năm bị bóng tối xâm chiếm. Quái vật rình rập sau những tán cây phát sáng!";
+    if (elDiffDot) elDiffDot.className = "diff-dot " + (diffInfo.dotClass || "normal");
+    if (elDiffLabel) elDiffLabel.textContent = `Độ Khó: ${diffInfo.badge} (${diffInfo.rewardText})`;
+    if (elStartSub) elStartSub.textContent = `Ải 1 · Độ Khó: ${diffInfo.badge} (${diffInfo.rewardText})`;
   }
 
   // ═════════════════════════════════════════════════════════════════

@@ -39,4 +39,38 @@
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 5. MODAL HÒM THƯ QUÀ TẶNG (MAILBOX POPUP)             -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="modal-mailbox" class="modal-backdrop hidden">
+      <div class="modal-card mail-modal-card">
+        <div class="modal-header">
+          <div class="mail-header-title">
+            <h3>✉️ HÒM THƯ QUÀ TẶNG</h3>
+            <span id="mail-unread-count" class="mail-unread-tag">0 thư mới</span>
+          </div>
+          <button id="btn-mail-close" class="close-btn">&times;</button>
+        </div>
+
+        <div class="mail-actions-bar">
+          <span class="mail-hint">Quà & Coin 🪙 SSC từ Ban Quản Trị</span>
+          <button id="btn-mail-claim-all" class="btn mini primary">🎁 Nhận Tất Cả</button>
+        </div>
+
+        <div class="modal-body mail-modal-body">
+          <div id="mail-list" class="mail-list"></div>
+          <div id="mail-empty" class="mail-empty hidden">
+            <div class="mail-empty-icon">📭</div>
+            <p>Hòm thư trống!</p>
+            <small>Bạn đã nhận hết toàn bộ quà tặng</small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-mail-done" class="btn ghost small full">Đóng Hòm Thư</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+

@@ -14,6 +14,21 @@ class Game {
     Sprites.init(); // nạp hình nhân vật/quái từ assets/ (nếu có)
     window._gameRef = this; // để enemy vẽ mắt hướng về player (đơn giản hóa)
 
+    // Nạp hình ảnh nền bản đồ Ải 1 (Rừng Bóng Đêm)
+    this.mapImg = new Image();
+    this.mapImg.src = "assets/map-forest.jpg";
+
+    // Nạp hình ảnh sàn thi đấu ma thuật trong trận (Top-down Battle Ground)
+    this.groundImg = new Image();
+    this.groundImg.src = "assets/battle-ground.jpg";
+
+    // Độ khó thử thách hiện tại (Mặc định: 'normal')
+    this.difficulty = "normal";
+    this.difficultyData = (typeof CONFIG !== "undefined" && CONFIG.difficulties) ? CONFIG.difficulties.normal : null;
+
+    // Khởi tạo các đốm bụi linh hồn bay lơ lửng trong không gian trận đấu
+    this.initAmbientSpores();
+
     this.state = "splash";
     this.reset();
 
@@ -92,10 +107,11 @@ class Game {
     this.updateEnemies(dt);
     this.updateGems(dt);
     this.updateCoins(dt);
+    this.updateAmbientSpores(dt);
 
     // Kiểm tra lên cấp
     this.pendingLevelUps += this.player.consumeLevelUps();
-    if (this.pendingLevelUps > 0) this.openLevelUp();
+    this.pendingLevelUps > 0 && this.openLevelUp();
   }
 
   updateProjectiles(dt) {
@@ -142,10 +158,20 @@ class Game {
     this.coins = this.coins.filter((c) => !c.dead);
   }
 
-  /** Nhặt coin -> cộng vào tổng ván + lưu vào tài khoản (nếu có) */
+  /** Cập nhật độ khó của màn chơi */
+  setDifficulty(diffKey) {
+    if (typeof CONFIG !== "undefined" && CONFIG.difficulties && CONFIG.difficulties[diffKey]) {
+      this.difficulty = diffKey;
+      this.difficultyData = CONFIG.difficulties[diffKey];
+    }
+  }
+
+  /** Nhặt coin -> cộng vào tổng ván + lưu vào tài khoản (nếu có, nhân theo hệ số độ khó) */
   addSsc(value) {
-    this.runSsc += value;
-    Save.addSsc(value); // tự bỏ qua nếu chưa đăng nhập
+    const mult = (this.difficultyData && this.difficultyData.sscMult) ? this.difficultyData.sscMult : 1;
+    const finalVal = Math.max(1, Math.round(value * mult));
+    this.runSsc += finalVal;
+    Save.addSsc(finalVal); // tự bỏ qua nếu chưa đăng nhập
   }
 
   // ============ SỰ KIỆN ============
@@ -490,19 +516,87 @@ class Game {
   }
 
   drawBackground(ctx) {
-    ctx.fillStyle = "#101418";
-    ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
-    // Lưới caro mờ
-    ctx.strokeStyle = "rgba(255,255,255,0.035)";
+    if (this.groundImg && this.groundImg.complete && this.groundImg.naturalWidth > 0) {
+      // 1. Vẽ sàn thi đấu ma thuật top-down
+      ctx.drawImage(this.groundImg, 0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+
+      // 2. Lớp phủ vignette mềm tối dần về các cạnh để nhân vật, quái và ngọc nổi bật
+      const vig = ctx.createRadialGradient(
+        CONFIG.canvasWidth / 2, CONFIG.canvasHeight / 2, CONFIG.canvasWidth * 0.22,
+        CONFIG.canvasWidth / 2, CONFIG.canvasHeight / 2, CONFIG.canvasWidth * 0.62
+      );
+      vig.addColorStop(0, "rgba(8, 12, 18, 0.22)");
+      vig.addColorStop(1, "rgba(4, 6, 10, 0.68)");
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+    } else if (this.mapImg && this.mapImg.complete && this.mapImg.naturalWidth > 0) {
+      ctx.drawImage(this.mapImg, 0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+      ctx.fillStyle = "rgba(10, 14, 22, 0.58)";
+      ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+    } else {
+      ctx.fillStyle = "#101418";
+      ctx.fillRect(0, 0, CONFIG.canvasWidth, CONFIG.canvasHeight);
+    }
+
+    // 3. Đốm bụi linh hồn bay bổng trong không gian rừng ma thuật
+    this.drawAmbientSpores(ctx);
+
+    // 4. Lưới ma trận không gian mờ
+    ctx.strokeStyle = "rgba(79, 195, 247, 0.035)";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    for (let x = 0; x <= CONFIG.canvasWidth; x += 64) {
+    for (let x = 0; x <= CONFIG.canvasWidth; x += 80) {
       ctx.moveTo(x, 0); ctx.lineTo(x, CONFIG.canvasHeight);
     }
-    for (let y = 0; y <= CONFIG.canvasHeight; y += 64) {
+    for (let y = 0; y <= CONFIG.canvasHeight; y += 80) {
       ctx.moveTo(0, y); ctx.lineTo(CONFIG.canvasWidth, y);
     }
     ctx.stroke();
+  }
+
+  /** Khởi tạo các đốm bụi linh hồn trôi nổi trong rừng */
+  initAmbientSpores() {
+    this.ambientSpores = [];
+    for (let i = 0; i < 28; i++) {
+      this.ambientSpores.push({
+        x: Math.random() * CONFIG.canvasWidth,
+        y: Math.random() * CONFIG.canvasHeight,
+        vx: (Math.random() - 0.5) * 16,
+        vy: (Math.random() - 0.5) * 12 - 6,
+        radius: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.5 + 0.2,
+        color: Math.random() > 0.4 ? "#80d8ff" : "#b388ff",
+      });
+    }
+  }
+
+  /** Cập nhật chuyển động đốm bụi linh hồn */
+  updateAmbientSpores(dt) {
+    if (!this.ambientSpores) return;
+    for (const s of this.ambientSpores) {
+      s.x += s.vx * dt;
+      s.y += s.vy * dt;
+      if (s.x < 0) s.x += CONFIG.canvasWidth;
+      if (s.x > CONFIG.canvasWidth) s.x -= CONFIG.canvasWidth;
+      if (s.y < 0) s.y += CONFIG.canvasHeight;
+      if (s.y > CONFIG.canvasHeight) s.y -= CONFIG.canvasHeight;
+    }
+  }
+
+  /** Vẽ đốm bụi linh hồn phát sáng */
+  drawAmbientSpores(ctx) {
+    if (!this.ambientSpores) return;
+    ctx.save();
+    for (const s of this.ambientSpores) {
+      ctx.globalAlpha = s.alpha;
+      ctx.fillStyle = s.color;
+      ctx.shadowColor = s.color;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 
   drawHUD(ctx) {

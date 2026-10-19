@@ -84,6 +84,11 @@
             <span class="stat-icon">🪙</span>
             <b id="lobby-ssc">0</b>
           </div>
+          <!-- Nút Hòm Thư Quà Tặng -->
+          <button id="btn-mail-open" class="icon-btn mail-btn" title="Hòm thư quà tặng">
+            <span class="mail-icon">✉️</span>
+            <span id="mail-badge" class="mail-badge hidden"></span>
+          </button>
           <button id="btn-settings-open" class="icon-btn" title="Cài đặt">⚙️</button>
         </div>
       </header>
@@ -219,42 +224,80 @@
         <section id="tab-battle" class="tab-panel">
           <div class="panel-header">
             <h2>⚔️ CHIẾN TRƯỜNG SINH TỒN</h2>
-            <p class="panel-desc">Chọn ải thử thách, chỉnh phím bấm và bắt đầu xuất trận</p>
+            <p class="panel-desc">Khám phá bản đồ, chọn độ khó và xuất trận</p>
           </div>
 
-          <!-- Hero Stage Card -->
+          <!-- Hero Stage Card với Hình Ảnh Map Rừng Bóng Đêm -->
           <div class="battle-hero-card">
-            <div id="battle-stage-badge" class="map-badge">ẢI 1 · RỪNG BÓNG ĐÊM</div>
-            <div class="battle-stage-visual">
-              <div class="stage-portal">
-                <span class="portal-boss">👾</span>
-                <span class="portal-char">🧙‍♂️</span>
+            <div class="map-banner-wrap">
+              <img src="assets/map-forest.jpg" alt="Rừng Bóng Đêm" class="map-banner-img" />
+              <div class="map-banner-overlay"></div>
+              <div id="battle-stage-badge" class="map-badge">ẢI 1 · RỪNG BÓNG ĐÊM</div>
+              <div class="map-diff-pill" id="map-diff-pill">
+                <span id="map-diff-dot" class="diff-dot normal"></span>
+                <span id="map-diff-label">Độ Khó: Thường (x1.5 SSC)</span>
               </div>
             </div>
+
             <div class="stage-info">
-              <h3 id="battle-stage-title">Mục Tiêu Sống Sót: 10 Phút</h3>
-              <p id="battle-stage-desc">Boss khổng lồ xuất hiện ở các phút <b>2</b>, <b>5</b> và <b>8</b>!</p>
+              <h3 id="battle-stage-title">Rừng Bóng Đêm (Dark Forest)</h3>
+              <p id="battle-stage-desc">Khu rừng cổ thụ ngàn năm bị bóng tối xâm chiếm. Quái vật rình rập sau những tán cây phát sáng!</p>
+              
+              <!-- Map Highlights Tags -->
+              <div class="stage-tags-row">
+                <span class="stagetag">⏳ Sống sót 10 phút</span>
+                <span class="stagetag">🌲 Rừng u tối</span>
+                <span class="stagetag gold">👑 3 Đợt Boss</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chọn Độ Khó cho Ải 1 (3 Cấp Độ) -->
+          <div class="difficulty-select-wrap">
+            <span class="quick-title">🔥 Chọn Độ Khó Thử Thách:</span>
+            <div class="diff-cards-grid">
+              <button type="button" class="diff-card" data-diff="easy">
+                <div class="diff-top">
+                  <span class="diff-icon">🟢</span>
+                  <b>DỄ</b>
+                </div>
+                <div class="diff-name">Tân thủ</div>
+                <div class="diff-reward">🪙 x1.0 SSC</div>
+              </button>
+
+              <button type="button" class="diff-card active" data-diff="normal">
+                <div class="diff-top">
+                  <span class="diff-icon">🟡</span>
+                  <b>THƯỜNG</b>
+                </div>
+                <div class="diff-name">Tiêu chuẩn</div>
+                <div class="diff-reward hot">🪙 x1.5 SSC</div>
+              </button>
+
+              <button type="button" class="diff-card" data-diff="nightmare">
+                <div class="diff-top">
+                  <span class="diff-icon">🔴</span>
+                  <b>ÁC MỘNG</b>
+                </div>
+                <div class="diff-name">Cực khó</div>
+                <div class="diff-reward vvip">🪙 x2.5 SSC</div>
+              </button>
             </div>
           </div>
 
           <!-- Chọn Bản Đồ (Stage Select) -->
           <div class="stage-selector-wrap">
-            <span class="quick-title">🗺️ Chọn Ải Chiến Đấu:</span>
+            <span class="quick-title">🗺️ Danh Sách Ải:</span>
             <div class="stage-selector-grid">
               <button type="button" class="stage-card active" data-stage="1">
                 <div class="stage-icon">🌲</div>
                 <div class="stage-name">Ải 1: Rừng Bóng Đêm</div>
                 <small class="stage-tag">Đang chọn</small>
               </button>
-              <button type="button" class="stage-card" data-stage="2">
-                <div class="stage-icon">🌋</div>
-                <div class="stage-name">Ải 2: Hang Dung Nham</div>
-                <small class="stage-tag hot">Khó · +20% Tốc</small>
-              </button>
-              <button type="button" class="stage-card" data-stage="3">
-                <div class="stage-icon">🌌</div>
-                <div class="stage-name">Ải 3: Đỉnh Hư Không</div>
-                <small class="stage-tag dark">Ác Mộng</small>
+              <button type="button" class="stage-card locked" data-stage="2">
+                <div class="stage-icon">🔒</div>
+                <div class="stage-name">Ải 2: Sắp Ra Mắt</div>
+                <small class="stage-tag lock-tag">Đang phát triển</small>
               </button>
             </div>
           </div>
@@ -284,7 +327,7 @@
               <span class="sword-icon">⚔️</span>
               <span class="btn-text">
                 <b>XUẤT TRẬN NGAY</b>
-                <small>Bắt đầu cuộc chiến sinh tồn</small>
+                <small id="btn-start-sub">Ải 1 · Độ Khó: Thường (x1.5 SSC)</small>
               </span>
             </button>
           </div>
@@ -509,7 +552,41 @@
       </div>
     </div>
 
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- 5. MODAL HÒM THƯ QUÀ TẶNG (MAILBOX POPUP)             -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div id="modal-mailbox" class="modal-backdrop hidden">
+      <div class="modal-card mail-modal-card">
+        <div class="modal-header">
+          <div class="mail-header-title">
+            <h3>✉️ HÒM THƯ QUÀ TẶNG</h3>
+            <span id="mail-unread-count" class="mail-unread-tag">0 thư mới</span>
+          </div>
+          <button id="btn-mail-close" class="close-btn">&times;</button>
+        </div>
+
+        <div class="mail-actions-bar">
+          <span class="mail-hint">Quà & Coin 🪙 SSC từ Ban Quản Trị</span>
+          <button id="btn-mail-claim-all" class="btn mini primary">🎁 Nhận Tất Cả</button>
+        </div>
+
+        <div class="modal-body mail-modal-body">
+          <div id="mail-list" class="mail-list"></div>
+          <div id="mail-empty" class="mail-empty hidden">
+            <div class="mail-empty-icon">📭</div>
+            <p>Hòm thư trống!</p>
+            <small>Bạn đã nhận hết toàn bộ quà tặng</small>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-mail-done" class="btn ghost small full">Đóng Hòm Thư</button>
+        </div>
+      </div>
+    </div>
+
   </div>
+
 
   <!-- Nạp scripts game theo đúng thứ tự (kèm query v=2.4 chống cache trình duyệt) -->
   <script src="js/config.js?v=2.4"></script>
@@ -526,6 +603,7 @@
   <script src="js/systems/meta.js?v=2.4"></script>
   <script src="js/systems/save.js?v=2.4"></script>
   <script src="js/systems/upgrades.js?v=2.4"></script>
+  <script src="js/systems/mailbox.js?v=2.4"></script>
   <script src="js/ui.js?v=2.4"></script>
   <script src="js/game.js?v=2.4"></script>
 </body>

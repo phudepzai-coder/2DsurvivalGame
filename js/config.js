@@ -55,10 +55,88 @@ const CONFIG = {
     baseBatch: 1,          // số quái/đợt lúc đầu
   },
 
-  // Sự kiện theo mốc thời gian (giây): spawn BOSS
+  // Sự kiện theo mốc thời gian (giây): spawn BOSS mặc định
   events: [
     { time: 120, type: "boss", label: "⚠️ BOSS XUẤT HIỆN! (phút 2)" },
     { time: 300, type: "boss", label: "⚠️ BOSS THỨ HAI! (phút 5)" },
     { time: 480, type: "boss", label: "⚠️ BOSS CUỐI! (phút 8)" },
   ],
+
+  // Cấu hình Bản đồ (Ải)
+  stages: {
+    1: {
+      id: "1",
+      name: "Rừng Bóng Đêm",
+      subtitle: "Dark Forest",
+      badge: "ẢI 1 · RỪNG BÓNG ĐÊM",
+      image: "assets/map-forest.jpg",
+      desc: "Khu rừng cổ thụ ngàn năm bị bóng tối xâm chiếm. Quái vật rình rập sau những tán cây phát sáng!",
+      targetMinutes: 10,
+    },
+    2: {
+      id: "2",
+      name: "Ải 2: Sắp Ra Mắt",
+      subtitle: "Đang phát triển",
+      locked: true,
+      desc: "Vùng đất mới đang được khám phá...",
+    }
+  },
+
+  // 3 Mức Độ Khó cho Ải 1
+  difficulties: {
+    easy: {
+      id: "easy",
+      name: "Dễ (Tân thủ)",
+      badge: "DỄ",
+      icon: "🟢",
+      dotClass: "easy",
+      hpMult: 0.85,
+      speedMult: 0.85,
+      damageMult: 0.85,
+      sscMult: 1.0,
+      rewardText: "x1.0 SSC",
+      desc: "Quái yếu hơn, thích hợp cho tân thủ làm quen và thử nghiệm build kỹ năng.",
+      events: [
+        { time: 180, type: "boss", label: "⚠️ BOSS XUẤT HIỆN! (phút 3)" },
+        { time: 420, type: "boss", label: "⚠️ BOSS CUỐI! (phút 7)" },
+      ]
+    },
+    normal: {
+      id: "normal",
+      name: "Thường (Tiêu chuẩn)",
+      badge: "THƯỜNG",
+      icon: "🟡",
+      dotClass: "normal",
+      hpMult: 1.15,
+      speedMult: 1.1,
+      damageMult: 1.0,
+      sscMult: 1.5,
+      rewardText: "x1.5 SSC",
+      desc: "Trải nghiệm chuẩn mực, quái chạy nhanh hơn và rơi x1.5 Coin SSC!",
+      events: [
+        { time: 120, type: "boss", label: "⚠️ BOSS XUẤT HIỆN! (phút 2)" },
+        { time: 300, type: "boss", label: "⚠️ BOSS THỨ HAI! (phút 5)" },
+        { time: 480, type: "boss", label: "⚠️ BOSS CUỐI! (phút 8)" },
+      ]
+    },
+    nightmare: {
+      id: "nightmare",
+      name: "Ác Mộng (Cực khó)",
+      badge: "ÁC MỘNG",
+      icon: "🔴",
+      dotClass: "nightmare",
+      hpMult: 1.45,
+      speedMult: 1.25,
+      damageMult: 1.3,
+      sscMult: 2.5,
+      rewardText: "x2.5 SSC",
+      desc: "Quái cực đông và hung tợn! Boss xuất hiện liên tục, rơi x2.5 Coin SSC!",
+      events: [
+        { time: 90, type: "boss", label: "⚠️ BOSS 1 XUẤT HIỆN! (1p30s)" },
+        { time: 210, type: "boss", label: "⚠️ BOSS 2 XUẤT HIỆN! (3p30s)" },
+        { time: 330, type: "boss", label: "⚠️ BOSS 3 XUẤT HIỆN! (5p30s)" },
+        { time: 450, type: "boss", label: "⚠️ ĐẠI MA VƯƠNG! (7p30s)" },
+      ]
+    }
+  }
 };

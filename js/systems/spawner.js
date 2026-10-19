@@ -11,9 +11,13 @@ class Spawner {
   update(dt) {
     const time = this.game.elapsed;
 
-    // 1) Xử lý sự kiện BOSS theo mốc thời gian
-    while (this.eventIndex < CONFIG.events.length && time >= CONFIG.events[this.eventIndex].time) {
-      const ev = CONFIG.events[this.eventIndex];
+    // 1) Xử lý sự kiện BOSS theo mốc thời gian và độ khó đã chọn
+    const events = (this.game && this.game.difficultyData && this.game.difficultyData.events)
+      ? this.game.difficultyData.events
+      : CONFIG.events;
+
+    while (this.eventIndex < events.length && time >= events[this.eventIndex].time) {
+      const ev = events[this.eventIndex];
       this.spawnEnemy(ev.type, time);
       this.game.showBanner(ev.label, 3);
       this.eventIndex++;
